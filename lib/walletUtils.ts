@@ -106,7 +106,7 @@ export async function isCoinbaseSmartWallet(
   sender: Address,
   initCode?: Hex
 ): Promise<boolean> {
-  const result = await checkCoinbaseSmartWallet(publicClient, sender, initCode);
+  const result = await checkCoinbaseSmartWallet(publicClient as PublicClient, sender, initCode);
   return result.isCoinbaseSmartWallet;
 }
 
