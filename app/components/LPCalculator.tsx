@@ -79,15 +79,15 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
   return (
     <div style={{
       maxWidth: 1400,
-      margin: '120px auto 0',
-      padding: '0 24px',
+      margin: 'clamp(60px, 8vw, 120px) auto 0',
+      padding: '0 clamp(16px, 4vw, 24px)',
     }}>
       <div style={{
         textAlign: 'center',
-        marginBottom: 64,
+        marginBottom: 'clamp(32px, 6vw, 64px)',
       }}>
         <h2 style={{
-          fontSize: 'clamp(36px, 6vw, 56px)',
+          fontSize: 'clamp(28px, 6vw, 56px)',
           fontWeight: 800,
           marginBottom: 16,
           color: theme.text,
@@ -96,24 +96,24 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
           Calculate Your Potential Earnings
         </h2>
         <p style={{
-          fontSize: 20,
+          fontSize: 'clamp(16px, 2.5vw, 20px)',
           color: theme.textSecondary,
           maxWidth: 700,
           margin: '0 auto',
           lineHeight: 1.6,
         }}>
-          See how much you could earn with different LP strategies over time
+          See how much you could earn with LP strategies over time
         </p>
       </div>
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-        gap: 32,
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))',
+        gap: 'clamp(24px, 4vw, 32px)',
       }}>
         {/* Left Panel - Input */}
         <div style={{
-          padding: 40,
+          padding: 'clamp(24px, 5vw, 40px)',
           background: theme.cardBg,
           borderRadius: 20,
           boxShadow: darkMode
@@ -121,19 +121,19 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
             : '0 4px 12px rgba(0, 0, 0, 0.05)',
         }}>
           <h3 style={{
-            fontSize: 24,
+            fontSize: 'clamp(20px, 3vw, 24px)',
             fontWeight: 800,
-            marginBottom: 32,
+            marginBottom: 'clamp(24px, 4vw, 32px)',
             color: theme.text,
             letterSpacing: '-0.01em',
           }}>
             Investment Details
           </h3>
 
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 'clamp(20px, 3vw, 24px)' }}>
             <label style={{
               display: 'block',
-              fontSize: 14,
+              fontSize: 'clamp(13px, 1.8vw, 14px)',
               fontWeight: 600,
               color: theme.text,
               marginBottom: 8,
@@ -146,14 +146,15 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
               onChange={(e) => setInitialDeposit(e.target.value)}
               style={{
                 width: '100%',
-                padding: '14px 18px',
-                fontSize: 16,
+                padding: 'clamp(12px, 2vw, 14px) clamp(14px, 2.5vw, 18px)',
+                fontSize: 'clamp(15px, 2vw, 16px)',
                 border: `1px solid ${theme.border}`,
                 borderRadius: 10,
                 background: theme.bg,
                 color: theme.text,
                 outline: 'none',
                 transition: 'all 0.2s ease',
+                boxSizing: 'border-box',
               }}
               onFocus={(e) => {
                 e.currentTarget.style.borderColor = theme.accent;
@@ -168,10 +169,10 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
             />
           </div>
 
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 'clamp(20px, 3vw, 24px)' }}>
             <label style={{
               display: 'block',
-              fontSize: 14,
+              fontSize: 'clamp(13px, 1.8vw, 14px)',
               fontWeight: 600,
               color: theme.text,
               marginBottom: 8,
@@ -184,14 +185,15 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
               onChange={(e) => setApr(e.target.value)}
               style={{
                 width: '100%',
-                padding: '14px 18px',
-                fontSize: 16,
+                padding: 'clamp(12px, 2vw, 14px) clamp(14px, 2.5vw, 18px)',
+                fontSize: 'clamp(15px, 2vw, 16px)',
                 border: `1px solid ${theme.border}`,
                 borderRadius: 10,
                 background: theme.bg,
                 color: theme.text,
                 outline: 'none',
                 transition: 'all 0.2s ease',
+                boxSizing: 'border-box',
               }}
               onFocus={(e) => {
                 e.currentTarget.style.borderColor = theme.accent;
@@ -207,10 +209,10 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
             />
           </div>
 
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 'clamp(20px, 3vw, 24px)' }}>
             <label style={{
               display: 'block',
-              fontSize: 14,
+              fontSize: 'clamp(13px, 1.8vw, 14px)',
               fontWeight: 600,
               color: theme.text,
               marginBottom: 12,
@@ -220,9 +222,10 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
             
             <div style={{
               display: 'flex',
-              gap: 12,
+              gap: 'clamp(8px, 1.5vw, 12px)',
               alignItems: 'center',
               marginBottom: 12,
+              flexWrap: 'wrap',
             }}>
               <input
                 type="number"
@@ -238,9 +241,10 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
               min={1}
               max={periodUnit === "days" ? 365 : 120}
                 style={{
-                  width: 100,
-                  padding: '12px 14px',
-                  fontSize: 16,
+                  width: 'clamp(80px, 15vw, 100px)',
+                  minWidth: 80,
+                  padding: 'clamp(10px, 1.8vw, 12px) clamp(12px, 2vw, 14px)',
+                  fontSize: 'clamp(14px, 2vw, 16px)',
                   border: `1px solid ${theme.border}`,
                   borderRadius: 10,
                   background: theme.bg,
@@ -248,6 +252,7 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
                   outline: 'none',
                   transition: 'all 0.2s ease',
                   fontWeight: 600,
+                  boxSizing: 'border-box',
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = theme.accent;
@@ -265,23 +270,27 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
               />
               <div style={{
                 display: 'flex',
-                gap: 8,
+                gap: 'clamp(6px, 1vw, 8px)',
                 background: theme.bgSecondary,
                 borderRadius: 8,
                 padding: 4,
+                flex: '1 1 auto',
+                minWidth: 0,
               }}>
                 <button
                   onClick={() => setPeriodUnit("days")}
                   style={{
-                    padding: '8px 16px',
+                    padding: 'clamp(6px, 1.2vw, 8px) clamp(12px, 2vw, 16px)',
                     borderRadius: 8,
                     border: 'none',
                     background: periodUnit === "days" ? theme.gradient : darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
                     color: periodUnit === "days" ? '#ffffff' : theme.text,
-                    fontSize: 14,
+                    fontSize: 'clamp(13px, 1.8vw, 14px)',
                     fontWeight: 600,
                     cursor: 'pointer',
                     transition: 'all 0.2s',
+                    whiteSpace: 'nowrap',
+                    flex: '1 1 0',
                   }}
                 >
                   Days
@@ -289,15 +298,17 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
                 <button
                   onClick={() => setPeriodUnit("months")}
                   style={{
-                    padding: '8px 16px',
+                    padding: 'clamp(6px, 1.2vw, 8px) clamp(12px, 2vw, 16px)',
                     borderRadius: 8,
                     border: 'none',
                     background: periodUnit === "months" ? theme.gradient : darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
                     color: periodUnit === "months" ? '#ffffff' : theme.text,
-                    fontSize: 14,
+                    fontSize: 'clamp(13px, 1.8vw, 14px)',
                     fontWeight: 600,
                     cursor: 'pointer',
                     transition: 'all 0.2s',
+                    whiteSpace: 'nowrap',
+                    flex: '1 1 0',
                   }}
                 >
                   Months
@@ -323,9 +334,11 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
-              fontSize: 12,
+              fontSize: 'clamp(10px, 1.5vw, 12px)',
               color: theme.textSecondary,
               marginTop: 4,
+              flexWrap: 'wrap',
+              gap: '4px 0',
             }}>
               {periodUnit === "days" ? (
                 <>
@@ -346,12 +359,13 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
           </div>
 
           <div style={{
-            padding: 16,
+            padding: 'clamp(12px, 2vw, 16px)',
             background: darkMode ? 'rgba(66, 165, 245, 0.1)' : 'rgba(37, 99, 235, 0.05)',
             borderRadius: 8,
-            fontSize: 12,
+            fontSize: 'clamp(11px, 1.5vw, 12px)',
             color: theme.textSecondary,
             lineHeight: 1.6,
+            wordBreak: 'break-word',
           }}>
             <strong>Disclosure:</strong> APY rates are variable and not guaranteed. 
             This calculator is for illustrative purposes only. Actual returns may vary based on market conditions and impermanent loss.
@@ -360,7 +374,7 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
 
         {/* Right Panel - Results */}
         <div style={{
-          padding: 40,
+          padding: 'clamp(24px, 5vw, 40px)',
           background: darkMode ? '#1a1a1a' : '#f8f9fa',
           borderRadius: 20,
           boxShadow: darkMode
@@ -368,7 +382,7 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
             : '0 4px 12px rgba(0, 0, 0, 0.05)',
         }}>
           <h3 style={{
-            fontSize: 24,
+            fontSize: 'clamp(20px, 3vw, 24px)',
             fontWeight: 800,
             marginBottom: 12,
             color: theme.text,
@@ -377,14 +391,14 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
             Potential Earnings Comparison
           </h3>
           <p style={{
-            fontSize: 14,
+            fontSize: 'clamp(13px, 1.8vw, 14px)',
             color: theme.textSecondary,
-            marginBottom: 24,
+            marginBottom: 'clamp(20px, 3vw, 24px)',
           }}>
             Estimated returns over {periodValue} {periodUnit === "days" ? (periodValue === 1 ? "day" : "days") : (periodValue === 1 ? "month" : "months")}
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(16px, 2.5vw, 20px)' }}>
             {comparisons.map((item, idx) => {
               const barWidth = (item.earnings / maxEarnings) * 100;
               return (
@@ -394,10 +408,12 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     marginBottom: 8,
+                    flexWrap: 'wrap',
+                    gap: '8px 12px',
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(6px, 1vw, 8px)', flexWrap: 'wrap' }}>
                       <span style={{
-                        fontSize: 16,
+                        fontSize: 'clamp(14px, 2vw, 16px)',
                         fontWeight: 600,
                         color: theme.text,
                       }}>
@@ -405,27 +421,28 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
                       </span>
                       {item.isHighlight && (
                         <span style={{
-                          padding: '4px 8px',
+                          padding: 'clamp(3px, 0.5vw, 4px) clamp(6px, 1vw, 8px)',
                           borderRadius: 4,
                           background: theme.gradient,
                           color: '#ffffff',
-                          fontSize: 11,
+                          fontSize: 'clamp(10px, 1.3vw, 11px)',
                           fontWeight: 700,
+                          whiteSpace: 'nowrap',
                         }}>
                           HIGHEST YIELD
                         </span>
                       )}
                     </div>
-                    <div style={{ textAlign: 'right' }}>
+                    <div style={{ textAlign: 'right', flexShrink: 0 }}>
                       <div style={{
-                        fontSize: 18,
+                        fontSize: 'clamp(16px, 2.2vw, 18px)',
                         fontWeight: 700,
                         color: item.isHighlight ? theme.accent : theme.text,
                       }}>
                         ${item.earnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </div>
                       <div style={{
-                        fontSize: 14,
+                        fontSize: 'clamp(12px, 1.8vw, 14px)',
                         color: theme.textSecondary,
                       }}>
                         {item.apr.toFixed(2)}% APY
@@ -454,30 +471,32 @@ export default function LPCalculator({ darkMode, theme }: LPCalculatorProps) {
 
           {/* Total Value Display */}
           <div style={{
-            marginTop: 32,
-            padding: 24,
+            marginTop: 'clamp(24px, 4vw, 32px)',
+            padding: 'clamp(20px, 3vw, 24px)',
             background: theme.cardBg,
             borderRadius: 12,
             border: `2px solid ${theme.accent}`,
           }}>
             <div style={{
-              fontSize: 14,
+              fontSize: 'clamp(13px, 1.8vw, 14px)',
               color: theme.textSecondary,
               marginBottom: 8,
             }}>
               Total Value After {periodValue} {periodUnit === "days" ? (periodValue === 1 ? "Day" : "Days") : (periodValue === 1 ? "Month" : "Months")}
             </div>
             <div style={{
-              fontSize: 36,
+              fontSize: 'clamp(28px, 4.5vw, 36px)',
               fontWeight: 900,
               color: theme.accent,
               marginBottom: 4,
+              wordBreak: 'break-word',
             }}>
               ${result.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
             <div style={{
-              fontSize: 16,
+              fontSize: 'clamp(14px, 2vw, 16px)',
               color: theme.textSecondary,
+              wordBreak: 'break-word',
             }}>
               Initial: ${principal.toLocaleString()} + Earnings: ${result.earnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
