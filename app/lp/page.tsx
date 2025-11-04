@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { publicClient } from "../../lib/viemClient";
 import { AERODROME_PAIR_ABI, ERC20_ABI } from "../../lib/abis";
@@ -27,7 +27,7 @@ type LpResult = {
   aprPercent?: string;
 };
 
-export default function LpCheckerPage() {
+function LpCheckerPageContent() {
   const searchParams = useSearchParams();
   const { address: connectedAddress, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
@@ -441,7 +441,7 @@ export default function LpCheckerPage() {
                 )}
               </>
             ) : (
-              <ConnectWallet text="Connect" />
+              <ConnectWallet />
             )}
           </div>
           
@@ -1703,4 +1703,10 @@ export default function LpCheckerPage() {
   );
 }
 
-
+export default function LpCheckerPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: 24, textAlign: 'center' }}>Loading...</div>}>
+      <LpCheckerPageContent />
+    </Suspense>
+  );
+}
