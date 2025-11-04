@@ -14,7 +14,7 @@ export default function Success() {
       
       const result = await composeCastAsync({
         text: text,
-        embeds: [process.env.NEXT_PUBLIC_URL || ""]
+        embeds: [process.env.NEXT_PUBLIC_ROOT_URL || process.env.NEXT_PUBLIC_URL || ""]
       });
 
       // result.cast can be null if user cancels

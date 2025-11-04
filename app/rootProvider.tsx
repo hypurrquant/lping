@@ -15,7 +15,7 @@ export function RootProvider({ children }: { children: ReactNode }) {
         },
         wallet: {
           display: "modal",
-          preference: "all",
+          preference: "all", // includes injected wallets like MetaMask and Rabby
         },
       }}
       miniKit={{
