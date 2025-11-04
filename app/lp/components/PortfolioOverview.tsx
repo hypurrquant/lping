@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { CLPosition, Theme } from "../types";
 import { calculatePortfolioStats } from "../utils/portfolioStats";
+import ShareButton from "./ShareButton";
 
 interface PortfolioOverviewProps {
   positions: CLPosition[];
@@ -15,9 +16,12 @@ export default function PortfolioOverview({ positions, theme, darkMode }: Portfo
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <h2 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span>📊</span> Portfolio Overview
-      </h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span>📊</span> Portfolio Overview
+        </h2>
+        <ShareButton positions={positions} theme={theme} darkMode={darkMode} />
+      </div>
       
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
         {/* Total Deposits */}
