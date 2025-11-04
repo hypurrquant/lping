@@ -179,7 +179,7 @@ export default function Home() {
             lineHeight: 1.6,
             fontWeight: 400,
           }}>
-            Stop guessing which tokens to choose. Stop worrying about setting the right range. Join thousands who are earning safe, compounding returns with curated strategies that actually work.
+            Stop losing money in zero-sum futures games. Join thousands earning safe, compounding returns with curated strategies.
           </p>
         </div>
 
@@ -285,17 +285,17 @@ export default function Home() {
           {[
             {
               title: 'Not Sure Which Tokens?',
-              description: 'We curate the best pools and optimal ranges. Get expert recommendations designed for long-term stability.',
+              description: 'Expert-curated pools and optimal ranges for long-term stability.',
               accentColor: darkMode ? '#64b5f6' : theme.accent,
             },
             {
               title: 'See What Others Are Doing',
-              description: 'Discover successful strategies from top performers. Learn from real portfolios and follow what works.',
+              description: 'Discover successful strategies from top performers. Follow what works.',
               accentColor: darkMode ? '#ce93d8' : '#9c27b0',
             },
             {
               title: 'Safe Returns, Compounding Growth',
-              description: 'Wide-range positions for stability. Avoid risky leverage and earn consistent yield with compounding effects.',
+              description: 'Wide-range positions for stability. Earn consistent yield with compounding effects.',
               accentColor: darkMode ? '#81c784' : '#4caf50',
             },
           ].map((feature, idx) => (
