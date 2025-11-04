@@ -10,9 +10,15 @@ const ROOT_URL =
  */
 export const minikitConfig = {
   accountAssociation: {
-    header: "",
-    payload: "",
-    signature: ""
+    header: "eyJmaWQiOjQzMTcyMCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEVEODI2Mjk1MTllRGIzQTM4NWZBNTg2ODNkZEFCMmFlMThBNENhNTkifQ",
+    payload: "eyJkb21haW4iOiJscGluZy52ZXJjZWwuYXBwIn0",
+    signature: "38beppG/dWLJhgU2h+LJpNO2N6ezWh93lLd7euatzxd9tlq6m4HUgla5deWxFEQo9vwv5g0H07IkQnZWaKBFPhs="
+  },
+  // Base Builder configuration (optional)
+  // Add your Base Account address here if you have one
+  // @see https://docs.base.org/mini-apps/quickstart/migrate-existing-apps
+  baseBuilder: {
+    ownerAddress: process.env.NEXT_PUBLIC_BASE_BUILDER_ADDRESS || "", // Add your Base Account address
   },
   miniapp: {
     version: "1",
