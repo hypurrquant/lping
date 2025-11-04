@@ -311,10 +311,10 @@ export async function GET(request: Request) {
     }
 
     // 2) Get staked NFTs from gauges (whitelist pools + cache)
-    let stakedTokenIds: bigint[] = [];
+    const stakedTokenIds: bigint[] = [];
     try {
       // Start with whitelist pools
-      let poolKeys = WHITELIST_POOLS.map((pk) => ({
+      const poolKeys = WHITELIST_POOLS.map((pk) => ({
         token0: pk.token0 as Address,
         token1: pk.token1 as Address,
         tickSpacing: pk.tickSpacing,
