@@ -468,8 +468,8 @@ export async function GET(request: Request) {
         poolKeyList.push(null);
         continue;
       }
-      const [nonce, operator, token0, token1, tickSpacing, tickLower, tickUpper, liquidity] = r.result as any[];
-      const liquidityBig = liquidity as bigint;
+      const [_nonce, _operator, token0, token1, tickSpacing, tickLower, tickUpper, liquidity] = r.result;
+      const liquidityBig = liquidity;
       const isStaked = stakedSet.has(allTokenIds[i].toString());
       positions.push({
         tokenId: allTokenIds[i].toString(),
