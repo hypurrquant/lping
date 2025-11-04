@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useQuickAuth,useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { minikitConfig } from "../minikit.config";
 import styles from "./page.module.css";
 
@@ -20,7 +21,21 @@ export default function Home() {
   const { isFrameReady, setFrameReady, context } = useMiniKit();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
   const router = useRouter();
+
+  // Load dark mode preference from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) {
+      setDarkMode(saved === 'true');
+    }
+  }, []);
+
+  // Save dark mode preference to localStorage
+  useEffect(() => {
+    localStorage.setItem('darkMode', String(darkMode));
+  }, [darkMode]);
 
   // Initialize the  miniapp
   useEffect(() => {
@@ -84,7 +99,24 @@ export default function Home() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{ background: darkMode ? '#1a1a1a' : undefined, color: darkMode ? '#e0e0e0' : undefined, transition: 'background 0.3s, color 0.3s' }}>
+      <div style={{ position: 'absolute', top: 16, right: 60, zIndex: 10 }}>
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          style={{
+            padding: "8px 12px",
+            borderRadius: 8,
+            border: darkMode ? '1px solid #444' : '1px solid #ddd',
+            background: darkMode ? '#2d2d2d' : '#fff',
+            color: darkMode ? '#e0e0e0' : '#000',
+            cursor: "pointer",
+            fontSize: 16,
+          }}
+          title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          {darkMode ? "☀️" : "🌙"}
+        </button>
+      </div>
       <button className={styles.closeButton} type="button">
         ✕
       </button>
@@ -114,6 +146,11 @@ export default function Home() {
             </button>
           </form>
         </div>
+      </div>
+      <div style={{ marginTop: 16, textAlign: "center" }}>
+        <Link href="/lp" style={{ textDecoration: "underline", color: darkMode ? '#42a5f5' : undefined }}>
+          Go to LP Checker →
+        </Link>
       </div>
     </div>
   );
