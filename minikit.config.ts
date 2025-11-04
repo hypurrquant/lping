@@ -26,6 +26,7 @@ export const minikitConfig = {
     ogTitle: "LPing - LP Position Tracker",
     ogDescription: "Real-time monitoring of your Aerodrome Concentrated Liquidity positions",
     ogImageUrl: `https://lping.vercel.app/blue-hero.png`,
+    noindex: true,
   },      
 } as const;
 

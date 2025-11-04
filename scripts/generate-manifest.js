@@ -22,7 +22,7 @@ const manifest = {
     signature: "38beppG/dWLJhgU2h+LJpNO2N6ezWh93lLd7euatzxd9tlq6m4HUgla5deWxFEQo9vwv5g0H07IkQnZWaKBFPhs="
   },
   baseBuilder: {
-    ownerAddress: process.env.NEXT_PUBLIC_BASE_BUILDER_ADDRESS || ""
+    ownerAddress: process.env.NEXT_PUBLIC_BASE_BUILDER_ADDRESS || "0xb4fdb1C3A10ddA2cA109168c4A46f28b7Dc7156c"
   },
   miniapp: {
     version: "1",
