@@ -69,6 +69,81 @@ export default function RootLayout({
   return (
     <RootProvider>
       <html lang="en">
+        {/* Critical error suppression - must run FIRST before any other scripts */}
+        <Script
+          id="wallet-error-suppression"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                'use strict';
+                
+                // Suppress MetaMask/wallet extension conflicts - must run first
+                try {
+                  // Protect window.ethereum from redefinition errors
+                  var ethereumDescriptor = Object.getOwnPropertyDescriptor(window, 'ethereum');
+                  if (ethereumDescriptor && !ethereumDescriptor.configurable) {
+                    // Make it configurable if possible
+                    try {
+                      Object.defineProperty(window, 'ethereum', {
+                        ...ethereumDescriptor,
+                        configurable: true,
+                        writable: true
+                      });
+                    } catch(e) {
+                      // Ignore if we can't make it configurable
+                    }
+                  }
+                } catch(e) {
+                  // Ignore
+                }
+                
+                // Wrap Object.defineProperty to catch ethereum redefinition errors
+                var originalDefineProperty = Object.defineProperty;
+                Object.defineProperty = function(obj, prop, descriptor) {
+                  if (prop === 'ethereum' && obj === window) {
+                    try {
+                      return originalDefineProperty.call(this, obj, prop, descriptor);
+                    } catch(e) {
+                      // Silently ignore redefinition errors - expected when multiple wallets installed
+                      if (e.message && (e.message.includes('Cannot redefine property') || 
+                          e.message.includes('Cannot set property'))) {
+                        return obj;
+                      }
+                      throw e;
+                    }
+                  }
+                  return originalDefineProperty.call(this, obj, prop, descriptor);
+                };
+                
+                // Global error handler for wallet extension conflicts
+                window.addEventListener('error', function(event) {
+                  var message = event.message || '';
+                  if (message.includes('Cannot redefine property: ethereum') ||
+                      message.includes('Cannot set property ethereum') ||
+                      message.includes('MetaMask encountered an error')) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                    return false;
+                  }
+                }, true);
+                
+                // Handle unhandled promise rejections
+                window.addEventListener('unhandledrejection', function(event) {
+                  var reason = event.reason;
+                  var message = reason && reason.toString ? reason.toString() : '';
+                  if (message.includes('Cannot redefine property: ethereum') ||
+                      message.includes('Cannot set property ethereum') ||
+                      message.includes('MetaMask encountered an error')) {
+                    event.preventDefault();
+                    return false;
+                  }
+                });
+              })();
+            `,
+          }}
+        />
         <Script
           id="locale-fix"
           strategy="beforeInteractive"
@@ -131,7 +206,7 @@ export default function RootLayout({
                     return originalFetch.apply(window, arguments);
                   };
                   
-                  // Suppress MetaMask/wallet extension conflicts
+                  // Suppress MetaMask/wallet extension conflicts (additional layer)
                   try {
                     var originalDefineProperty = Object.defineProperty;
                     Object.defineProperty = function(obj, prop, descriptor) {
