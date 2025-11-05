@@ -280,6 +280,8 @@ export default function Home() {
             maxWidth: 1200,
             margin: '0 auto',
             padding: '0 24px',
+            justifyContent: 'center',
+            justifyItems: 'center',
             animation: 'fadeInUp 1.2s ease-out',
           }}>
           {[
@@ -313,6 +315,8 @@ export default function Home() {
                   : '0 4px 12px rgba(0, 0, 0, 0.05)',
                 borderLeft: `4px solid ${feature.accentColor}`,
                 position: 'relative',
+                width: '100%',
+                maxWidth: '100%',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-4px)';

@@ -33,7 +33,9 @@ export function MiniAppInitializer() {
           }
           
           // Call ready() to hide the loading splash screen
-          await sdk.actions.ready();
+          // disableNativeGestures: true is required when using swipe/drag interactions
+          // to prevent conflicts with Base App's native gestures
+          await sdk.actions.ready({ disableNativeGestures: true });
           setIsReady(true);
           console.log("[MiniApp] ✅ SDK ready() called successfully");
           return;
