@@ -266,6 +266,56 @@ export default function RootLayout({
         <body className={`${inter.variable} ${sourceCodePro.variable}`}>
           <MiniAppInitializer />
           <LocaleFix />
+          <Script
+            id="touch-scroll-fix"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                // Ensure touch scrolling works in Base App mini app
+                (function() {
+                  if (typeof document !== 'undefined') {
+                    // Prevent any touch event handlers from blocking scroll
+                    var passiveSupported = false;
+                    try {
+                      var opts = Object.defineProperty({}, 'passive', {
+                        get: function() {
+                          passiveSupported = true;
+                        }
+                      });
+                      window.addEventListener('test', null, opts);
+                    } catch(e) {}
+                    
+                    // Ensure touch events don't prevent scrolling
+                    var ensureScrollable = function() {
+                      var body = document.body;
+                      var html = document.documentElement;
+                      
+                      // Force touch-action styles
+                      if (body) {
+                        body.style.touchAction = 'pan-y';
+                        body.style.webkitOverflowScrolling = 'touch';
+                      }
+                      if (html) {
+                        html.style.touchAction = 'pan-y';
+                        html.style.webkitOverflowScrolling = 'touch';
+                      }
+                    };
+                    
+                    // Run immediately and after DOM is ready
+                    ensureScrollable();
+                    if (document.readyState === 'loading') {
+                      document.addEventListener('DOMContentLoaded', ensureScrollable);
+                    } else {
+                      ensureScrollable();
+                    }
+                    
+                    // Also run after a short delay to catch dynamic content
+                    setTimeout(ensureScrollable, 100);
+                  }
+                })();
+              `,
+            }}
+          />
           <SafeArea>{children}</SafeArea>
         </body>
       </html>
