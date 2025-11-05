@@ -28,7 +28,7 @@ const manifest = {
     version: "1",
     name: "LPing",
     homeUrl: ROOT_URL,
-    iconUrl: `${ROOT_URL}/blue-icon.png`,
+    iconUrl: `${ROOT_URL}/logo.png`,
     splashImageUrl: `${ROOT_URL}/blue-hero.png`,
     splashBackgroundColor: "#000000",
     webhookUrl: `${ROOT_URL}/api/webhook`,

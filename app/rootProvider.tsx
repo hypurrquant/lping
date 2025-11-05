@@ -113,7 +113,7 @@ export function RootProvider({ children }: { children: ReactNode }) {
     process.env.NEXT_PUBLIC_ROOT_URL || 
     process.env.NEXT_PUBLIC_URL ||
     (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000");
-  const appLogo = `${rootUrl}/blue-icon.png`;
+  const appLogo = `${rootUrl}/logo.png`;
 
   return (
     <OnchainKitProvider
