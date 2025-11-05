@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const ROOT_URL =
     process.env.NEXT_PUBLIC_ROOT_URL ||
     process.env.NEXT_PUBLIC_URL ||
-    "http://localhost:3000";
+    "https://lping.vercel.app";
 
   return {
     title: minikitConfig.miniapp.name,
