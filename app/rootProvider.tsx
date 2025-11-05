@@ -52,8 +52,58 @@ if (typeof window !== "undefined") {
         return new Response(null, { status: 403 });
       });
     }
+    // Suppress Analytics SDK fetch errors
+    if (url.includes("cca-lite.coinbase.com") || url.includes("/metrics")) {
+      return Promise.reject(new Error("Analytics request suppressed")).catch(() => {
+        return new Response(null, { status: 200 });
+      });
+    }
     return originalFetch.apply(window, args as [RequestInfo | URL, RequestInit?]);
   };
+
+  // Suppress MetaMask/wallet extension conflicts
+  try {
+    const originalDefineProperty = Object.defineProperty;
+    Object.defineProperty = function(obj: any, prop: string | symbol, descriptor: PropertyDescriptor) {
+      // Suppress ethereum property redefinition errors
+      if (prop === 'ethereum' && obj === window) {
+        try {
+          return originalDefineProperty.call(this, obj, prop, descriptor);
+        } catch(e: any) {
+          if (e?.message && e.message.includes('Cannot redefine property')) {
+            // Silently ignore - this is expected when multiple wallets are installed
+            return obj;
+          }
+          throw e;
+        }
+      }
+      return originalDefineProperty.call(this, obj, prop, descriptor);
+    };
+  } catch(e) {
+    // Ignore if we can't override defineProperty
+  }
+
+  // Suppress MetaMask provider errors
+  window.addEventListener('error', function(event: ErrorEvent) {
+    const message = event.message || '';
+    if (message.includes('Cannot redefine property: ethereum') ||
+        message.includes('Cannot set property ethereum') ||
+        message.includes('MetaMask encountered an error setting')) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }, true);
+
+  // Suppress unhandled promise rejections from wallet extensions
+  window.addEventListener('unhandledrejection', function(event: PromiseRejectionEvent) {
+    const reason = event.reason;
+    const message = reason && reason.toString ? reason.toString() : '';
+    if (message.includes('Cannot redefine property: ethereum') ||
+        message.includes('Cannot set property ethereum') ||
+        message.includes('MetaMask encountered an error')) {
+      event.preventDefault();
+    }
+  });
 }
 
 export function RootProvider({ children }: { children: ReactNode }) {

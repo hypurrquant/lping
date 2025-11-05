@@ -344,8 +344,8 @@ function LpCheckerPageContent() {
                           🔎 Search by Address
                         </button>
                       ) : (
-                        <div style={{ maxWidth: 500, margin: '0 auto' }}>
-                          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+                        <div style={{ maxWidth: '100%', margin: '0 auto', padding: '0 16px', boxSizing: 'border-box' }}>
+                          <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
                             <input
                               type="text"
                               placeholder="Enter wallet address (0x...)"
@@ -355,7 +355,8 @@ function LpCheckerPageContent() {
                                 setAddressError("");
                               }}
                               style={{
-                                flex: 1,
+                                flex: '1 1 200px',
+                                minWidth: 200,
                                 padding: '12px 16px',
                                 fontSize: 14,
                                 border: `1px solid ${addressError ? theme.warning : theme.border}`,
@@ -404,6 +405,8 @@ function LpCheckerPageContent() {
                                 borderRadius: 8,
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
+                                whiteSpace: 'nowrap',
+                                flexShrink: 0,
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.opacity = '0.9';
@@ -429,6 +432,8 @@ function LpCheckerPageContent() {
                                 border: `1px solid ${theme.border}`,
                                 borderRadius: 8,
                                 cursor: 'pointer',
+                                whiteSpace: 'nowrap',
+                                flexShrink: 0,
                               }}
                             >
                               Cancel

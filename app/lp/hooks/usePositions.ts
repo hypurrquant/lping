@@ -62,7 +62,10 @@ export function usePositions(ownerAddress?: Address, isConnected = false) {
 
   // Auto discover CL positions when connected or address changes
   useEffect(() => {
+    console.log('[usePositions] Effect triggered:', { ownerAddress, isConnected });
+    
     if (!ownerAddress) {
+      console.log('[usePositions] No ownerAddress, clearing state');
       setClPositions([]);
       setClLoading(false);
       setClError(null);
@@ -71,6 +74,7 @@ export function usePositions(ownerAddress?: Address, isConnected = false) {
     }
     
     // Always fetch when ownerAddress changes
+    console.log('[usePositions] Fetching positions for ownerAddress:', ownerAddress);
     fetchPositions(false, true);
   }, [ownerAddress, fetchPositions]);
   

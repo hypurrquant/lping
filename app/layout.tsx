@@ -122,8 +122,60 @@ export default function RootLayout({
                         return new Response(null, { status: 403 });
                       });
                     }
+                    // Suppress Analytics SDK fetch errors
+                    if (url.includes('cca-lite.coinbase.com') || url.includes('/metrics')) {
+                      return Promise.reject(new Error('Analytics request suppressed')).catch(function() {
+                        return new Response(null, { status: 200 });
+                      });
+                    }
                     return originalFetch.apply(window, arguments);
                   };
+                  
+                  // Suppress MetaMask/wallet extension conflicts
+                  try {
+                    var originalDefineProperty = Object.defineProperty;
+                    Object.defineProperty = function(obj, prop, descriptor) {
+                      // Suppress ethereum property redefinition errors
+                      if (prop === 'ethereum' && obj === window) {
+                        try {
+                          return originalDefineProperty.call(this, obj, prop, descriptor);
+                        } catch(e) {
+                          if (e.message && e.message.includes('Cannot redefine property')) {
+                            // Silently ignore - this is expected when multiple wallets are installed
+                            return obj;
+                          }
+                          throw e;
+                        }
+                      }
+                      return originalDefineProperty.call(this, obj, prop, descriptor);
+                    };
+                  } catch(e) {
+                    // Ignore if we can't override defineProperty
+                  }
+                  
+                  // Suppress MetaMask provider errors
+                  window.addEventListener('error', function(event) {
+                    var message = event.message || '';
+                    if (message.includes('Cannot redefine property: ethereum') ||
+                        message.includes('Cannot set property ethereum') ||
+                        message.includes('MetaMask encountered an error setting')) {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      return false;
+                    }
+                  }, true);
+                  
+                  // Suppress unhandled promise rejections from wallet extensions
+                  window.addEventListener('unhandledrejection', function(event) {
+                    var reason = event.reason;
+                    var message = reason && reason.toString ? reason.toString() : '';
+                    if (message.includes('Cannot redefine property: ethereum') ||
+                        message.includes('Cannot set property ethereum') ||
+                        message.includes('MetaMask encountered an error')) {
+                      event.preventDefault();
+                      return false;
+                    }
+                  });
                 }
               })();
             `,
