@@ -124,44 +124,18 @@ function LpCheckerPageContent() {
     refresh();
   }, [refresh]);
 
-  // Pull-to-refresh handlers - only activate when at top and scrolling down
-  // Must not interfere with normal scrolling
-  const handleTouchStart = (e: React.TouchEvent) => {
-    // Only track if we're at the very top of the page
-    if (window.scrollY === 0 && window.pageYOffset === 0) {
-      touchStartY.current = e.touches[0].clientY;
-    } else {
-      touchStartY.current = 0;
-    }
+  // Pull-to-refresh handlers - disabled to allow Base App native scrolling
+  // We'll implement pull-to-refresh differently if needed
+  const handleTouchStart = () => {
+    // Disabled - let Base App handle touch events
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    // Don't interfere with scrolling - only handle pull-to-refresh at top
-    if (touchStartY.current === 0 || window.scrollY > 0 || window.pageYOffset > 0) {
-      return; // Allow normal scrolling
-    }
-    
-    const touchY = e.touches[0].clientY;
-    const distance = touchY - touchStartY.current;
-    
-    // Only show pull indicator if pulling down (positive distance) and small distance
-    if (distance > 0 && distance < 150) {
-      setIsPulling(true);
-      setPullDistance(distance);
-      // Don't prevent default - allow scrolling to work
-    } else {
-      setIsPulling(false);
-      setPullDistance(0);
-    }
+  const handleTouchMove = () => {
+    // Disabled - let Base App handle touch events
   };
 
   const handleTouchEnd = () => {
-    if (isPulling && pullDistance > 80 && window.scrollY === 0) {
-      onRefresh(false);
-    }
-    setIsPulling(false);
-    setPullDistance(0);
-    touchStartY.current = 0;
+    // Disabled - let Base App handle touch events
   };
 
   return (
@@ -179,9 +153,7 @@ function LpCheckerPageContent() {
         boxSizing: 'border-box',
         // Don't set overflow or touch-action - let body handle scrolling natively
       }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      // Removed touch handlers to allow Base App native scrolling
     >
       {/* Pull-to-refresh indicator */}
       {isPulling && (

@@ -12,34 +12,32 @@
   }
 
   html {
-    max-width: 100vw;
-    overflow-x: hidden;
-    /* Don't set overflow-y on html - let body handle scrolling */
     height: 100%;
-    -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+    overflow: hidden; /* Prevent html from scrolling */
+    -webkit-overflow-scrolling: touch;
   }
 
   body {
-    max-width: 100vw;
+    height: 100%;
+    overflow-y: auto; /* Enable scrolling on body */
     overflow-x: hidden;
-    overflow-y: auto; /* Enable vertical scrolling */
-    min-height: 100vh; /* Minimum viewport height */
+    -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
     color: var(--foreground);
     background: var(--background);
     font-family: var(--font-inter), sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
-    /* Don't set touch-action on body - let Base App handle it natively */
-    overscroll-behavior-y: auto; /* Allow native scroll bounce */
+    position: relative;
+    overscroll-behavior-y: auto;
   }
   
   /* Base App mini app specific fixes */
   #__next,
   [data-nextjs-scroll-focus-boundary] {
-    min-height: 100vh;
+    min-height: 100%;
     height: auto;
-    /* Don't set touch-action - let Base App handle it */
+    display: flex;
+    flex-direction: column;
   }
   
   /* Ensure interactive elements don't interfere with scrolling */

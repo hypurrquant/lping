@@ -267,51 +267,49 @@ export default function RootLayout({
           <MiniAppInitializer />
           <LocaleFix />
           <Script
-            id="touch-scroll-fix"
-            strategy="beforeInteractive"
+            id="scroll-enable"
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
-                // Ensure touch scrolling works in Base App mini app
+                // Force enable scrolling in Base App mini app
                 (function() {
-                  if (typeof document !== 'undefined') {
-                    // Prevent any touch event handlers from blocking scroll
-                    var passiveSupported = false;
-                    try {
-                      var opts = Object.defineProperty({}, 'passive', {
-                        get: function() {
-                          passiveSupported = true;
-                        }
-                      });
-                      window.addEventListener('test', null, opts);
-                    } catch(e) {}
+                  function enableScrolling() {
+                    var body = document.body;
+                    var html = document.documentElement;
                     
-                    // Ensure touch events don't prevent scrolling
-                    var ensureScrollable = function() {
-                      var body = document.body;
-                      var html = document.documentElement;
-                      
-                      // Force touch-action styles
-                      if (body) {
-                        body.style.touchAction = 'pan-y';
-                        body.style.webkitOverflowScrolling = 'touch';
-                      }
-                      if (html) {
-                        html.style.touchAction = 'pan-y';
-                        html.style.webkitOverflowScrolling = 'touch';
-                      }
-                    };
-                    
-                    // Run immediately and after DOM is ready
-                    ensureScrollable();
-                    if (document.readyState === 'loading') {
-                      document.addEventListener('DOMContentLoaded', ensureScrollable);
-                    } else {
-                      ensureScrollable();
+                    if (body) {
+                      body.style.height = '100%';
+                      body.style.overflowY = 'auto';
+                      body.style.webkitOverflowScrolling = 'touch';
+                      body.style.position = 'relative';
                     }
                     
-                    // Also run after a short delay to catch dynamic content
-                    setTimeout(ensureScrollable, 100);
+                    if (html) {
+                      html.style.height = '100%';
+                      html.style.overflow = 'hidden';
+                    }
+                    
+                    // Ensure content is scrollable
+                    var content = document.getElementById('__next') || document.querySelector('[data-nextjs-scroll-focus-boundary]');
+                    if (content) {
+                      content.style.minHeight = '100%';
+                      content.style.height = 'auto';
+                    }
                   }
+                  
+                  // Run immediately
+                  enableScrolling();
+                  
+                  // Run after DOM is ready
+                  if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', enableScrolling);
+                  } else {
+                    enableScrolling();
+                  }
+                  
+                  // Run after a delay to catch any dynamic changes
+                  setTimeout(enableScrolling, 100);
+                  setTimeout(enableScrolling, 500);
                 })();
               `,
             }}
