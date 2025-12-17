@@ -42,14 +42,21 @@ async function main() {
 
   const eventAbi = parseAbiItem('event PoolCreated(address indexed token0, address indexed token1, int24 indexed tickSpacing, address pool)');
 
-  // Split into chunks to avoid RPC limits
-  const CHUNK_SIZE = 100_000n;
+  // Split into chunks to avoid RPC limits (Coinbase has 1000 block limit)
+  let CHUNK_SIZE = 1000n;
   const allLogs: any[] = [];
   let fromBlock = DEPLOY_BLOCK;
+  let errorCount = 0;
 
   while (fromBlock < latest) {
     const toBlock = fromBlock + CHUNK_SIZE > latest ? latest : fromBlock + CHUNK_SIZE;
-    console.log(`   Fetching ${fromBlock} → ${toBlock}...`);
+
+    // Progress indicator every 100 chunks
+    if ((Number(fromBlock - DEPLOY_BLOCK) / Number(CHUNK_SIZE)) % 100 === 0) {
+      const progress = ((Number(fromBlock - DEPLOY_BLOCK) / Number(latest - DEPLOY_BLOCK)) * 100).toFixed(1);
+      console.log(`   Progress: ${progress}% (block ${fromBlock}, found ${allLogs.length} pools)`);
+    }
+
     try {
       const logs = await client.getLogs({
         address: FACTORY,
@@ -57,18 +64,28 @@ async function main() {
         fromBlock,
         toBlock,
       });
-      allLogs.push(...logs);
-      console.log(`     Found ${logs.length} events (total: ${allLogs.length})`);
+      if (logs.length > 0) {
+        allLogs.push(...logs);
+        console.log(`     Block ${fromBlock}-${toBlock}: Found ${logs.length} events (total: ${allLogs.length})`);
+      }
+      errorCount = 0;
     } catch (e: any) {
-      console.error(`     ⚠️ Error fetching chunk: ${e.message}`);
-      // Continue with smaller chunk or skip
-      if (CHUNK_SIZE > 10_000n) {
-        console.log('     Retrying with smaller chunk size...');
-        fromBlock += 10_000n;
+      errorCount++;
+      if (errorCount > 5) {
+        console.error(`     ⚠️ Too many errors, skipping block range ${fromBlock}-${toBlock}`);
+        errorCount = 0;
+      } else {
+        // Small delay and retry
+        await new Promise(r => setTimeout(r, 100));
         continue;
       }
     }
     fromBlock = toBlock + 1n;
+
+    // Small delay to avoid rate limiting
+    if (Number(fromBlock) % 10000 === 0) {
+      await new Promise(r => setTimeout(r, 50));
+    }
   }
 
   console.log(`✅ Found ${allLogs.length} PoolCreated events total`);

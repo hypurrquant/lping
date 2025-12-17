@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest",
+    "test:run": "vitest run",
     "build-pool-cache": "tsx scripts/build-pool-cache.ts",
     "generate-manifest": "node scripts/generate-manifest.js"
   },
@@ -26,6 +28,9 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@next/eslint-plugin-next": "^15.3.4",
+    "@playwright/test": "^1.57.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -33,7 +38,10 @@
     "@typescript-eslint/parser": "^8.46.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
+    "jsdom": "^27.3.0",
+    "playwright": "^1.57.0",
     "tsx": "^4.20.6",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.0.16"
   }
 }

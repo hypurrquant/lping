@@ -4,6 +4,13 @@
   "includedPools": 94,
   "pools": [
     {
+      "pool": "0xb2cc224c1c9fee385f8ad6a55b4d94e92359dc59",
+      "token0": "0x4200000000000000000000000000000000000006",
+      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "tickSpacing": 100,
+      "index": 9999
+    },
+    {
       "pool": "0x3fa21140c9d8653de50bc06b395b69d723044ad1",
       "token0": "0x1b4617734c43f6159f3a70b7e06d883647512778",
       "token1": "0x2bf10b7575e0f26587788d574fca6ee7353eb564",
