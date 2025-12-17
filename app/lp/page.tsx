@@ -139,17 +139,17 @@ function LpCheckerPageContent() {
   };
 
   return (
-    <div 
-      style={{ 
-        maxWidth: 840, 
-        margin: "0 auto", 
-        padding: 16, 
-        minHeight: '100vh', 
-        background: theme.bg, 
-        color: theme.text, 
-        transition: 'background 0.3s, color 0.3s', 
-        position: 'relative', 
-        width: '100%', 
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '100%', // Full width for MiniApp
+        margin: 0,
+        padding: '16px 16px 100px 16px', // Added bottom padding for bottom nav
+        minHeight: '100vh',
+        background: theme.bg,
+        color: theme.text,
+        transition: 'background 0.3s, color 0.3s',
+        position: 'relative',
         boxSizing: 'border-box',
         // Don't set overflow or touch-action - let body handle scrolling natively
       }}

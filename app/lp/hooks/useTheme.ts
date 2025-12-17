@@ -2,13 +2,17 @@ import { useState, useEffect, useMemo } from "react";
 import type { Theme } from "../types";
 
 export function useTheme() {
-  const [darkMode, setDarkMode] = useState(false);
+  // Default to dark mode for MiniApp consistency
+  const [darkMode, setDarkMode] = useState(true);
 
   // Load dark mode preference from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('darkMode');
     if (saved !== null) {
       setDarkMode(saved === 'true');
+    } else {
+      // Default to dark mode if no preference saved
+      setDarkMode(true);
     }
   }, []);
 
@@ -18,21 +22,22 @@ export function useTheme() {
   }, [darkMode]);
 
   const theme: Theme = useMemo(() => ({
-    bg: darkMode ? '#1a1a1a' : '#ffffff',
-    bgSecondary: darkMode ? '#2a2a2a' : '#fafafa',
-    bgCard: darkMode ? '#2d2d2d' : '#ffffff',
-    border: darkMode ? '#444' : '#eee',
-    text: darkMode ? '#e0e0e0' : '#000000',
-    textSecondary: darkMode ? '#a0a0a0' : '#666',
-    success: darkMode ? '#4caf50' : '#2e7d32',
-    successBg: darkMode ? '#1b5e20' : '#e8f5e9',
-    successBorder: darkMode ? '#2e7d32' : '#c8e6c9',
-    warning: darkMode ? '#ff9800' : '#c62828',
-    warningBg: darkMode ? '#e65100' : '#ffebee',
-    primary: darkMode ? '#42a5f5' : '#1976d2',
-    skeleton: darkMode ? '#3a3a3a' : '#f3f3f3',
-    infoBg: darkMode ? '#424242' : '#fff8e1',
-    infoBorder: darkMode ? '#616161' : '#ffecb5',
+    // Dark mode colors matched with Explore/Analyze pages
+    bg: darkMode ? '#000000' : '#ffffff',
+    bgSecondary: darkMode ? '#0a0a0a' : '#fafafa',
+    bgCard: darkMode ? '#111111' : '#ffffff',
+    border: darkMode ? '#1f2937' : '#eee',
+    text: darkMode ? '#ffffff' : '#000000',
+    textSecondary: darkMode ? '#9ca3af' : '#666',
+    success: darkMode ? '#10b981' : '#2e7d32',
+    successBg: darkMode ? 'rgba(16, 185, 129, 0.1)' : '#e8f5e9',
+    successBorder: darkMode ? 'rgba(16, 185, 129, 0.3)' : '#c8e6c9',
+    warning: darkMode ? '#f59e0b' : '#c62828',
+    warningBg: darkMode ? 'rgba(245, 158, 11, 0.1)' : '#ffebee',
+    primary: darkMode ? '#10b981' : '#1976d2',
+    skeleton: darkMode ? '#1f2937' : '#f3f3f3',
+    infoBg: darkMode ? '#1f2937' : '#fff8e1',
+    infoBorder: darkMode ? '#374151' : '#ffecb5',
   }), [darkMode]);
 
   return { darkMode, setDarkMode, theme };

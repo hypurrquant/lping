@@ -6,6 +6,7 @@ import { minikitConfig } from "../minikit.config";
 import { RootProvider } from "./rootProvider";
 import { LocaleFix } from "./components/LocaleFix";
 import { MiniAppInitializer } from "./components/MiniAppInitializer";
+import BottomNav from "../components/BottomNav";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -314,7 +315,10 @@ export default function RootLayout({
               `,
             }}
           />
-          <SafeArea>{children}</SafeArea>
+          <SafeArea>
+            {children}
+          </SafeArea>
+          <BottomNav />
         </body>
       </html>
     </RootProvider>

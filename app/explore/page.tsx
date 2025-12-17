@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import PoolList from "./components/PoolList";
 import LiquidityChart from "./components/LiquidityChart";
 import InvestmentSimulator from "./components/InvestmentSimulator";
@@ -84,36 +83,9 @@ export default function ExplorePage() {
   }, [selectedPool?.id]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/" className="text-xl font-bold text-emerald-400">
-                LPing
-              </Link>
-              <nav className="flex items-center gap-2">
-                <Link
-                  href="/explore"
-                  className="px-3 py-1.5 text-sm font-medium bg-emerald-500/10 text-emerald-400 rounded-lg"
-                >
-                  Explore
-                </Link>
-                <Link
-                  href="/lp"
-                  className="px-3 py-1.5 text-sm font-medium text-gray-400 hover:text-white rounded-lg"
-                >
-                  My Positions
-                </Link>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-black text-white pb-4">
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-6">
+      <main className="max-w-7xl mx-auto px-4 py-4">
         {/* Page Title */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -130,11 +102,10 @@ export default function ExplorePage() {
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
               />
             </svg>
-            Explore Pools
+            Discover
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Discover Aerodrome CL pools, analyze liquidity distribution, and
-            simulate your investment
+            Find pools, analyze APR breakdown, and simulate your investment
           </p>
         </div>
 
@@ -226,9 +197,9 @@ export default function ExplorePage() {
           <div>
             {selectedPool ? (
               <div className="space-y-4">
-                {/* Pool Header */}
+                {/* Pool Header with APR Breakdown */}
                 <div className="bg-[#111] rounded-xl border border-gray-800 p-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mb-4">
                     <div>
                       <h2 className="text-lg font-bold text-white">
                         {selectedPool.token0.symbol}/
@@ -244,6 +215,32 @@ export default function ExplorePage() {
                         {selectedPool.totalAPR.toFixed(1)}%
                       </div>
                       <div className="text-xs text-gray-500">Total APR</div>
+                    </div>
+                  </div>
+
+                  {/* APR Breakdown */}
+                  <div className="grid grid-cols-3 gap-3 pt-3 border-t border-gray-800">
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">Fee APR</div>
+                      <div className="text-sm font-semibold text-blue-400">
+                        {selectedPool.feeAPR.toFixed(1)}%
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">Emission APR</div>
+                      <div className="text-sm font-semibold text-purple-400">
+                        {selectedPool.emissionAPR.toFixed(1)}%
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xs text-gray-500 mb-1">TVL</div>
+                      <div className="text-sm font-semibold text-white">
+                        ${selectedPool.tvlUSD >= 1000000
+                          ? (selectedPool.tvlUSD / 1000000).toFixed(2) + 'M'
+                          : selectedPool.tvlUSD >= 1000
+                            ? (selectedPool.tvlUSD / 1000).toFixed(0) + 'K'
+                            : selectedPool.tvlUSD.toFixed(0)}
+                      </div>
                     </div>
                   </div>
                 </div>
