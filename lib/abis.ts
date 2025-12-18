@@ -243,6 +243,78 @@ export const CL_GAUGE_ABI = [
   },
 ] as const;
 
+// LP Sugar v3 - Pool listing (28 fields per Lp struct - from official sugar-sdk)
+const LP_STRUCT_COMPONENTS = [
+  { name: "lp", type: "address" },
+  { name: "symbol", type: "string" },
+  { name: "decimals", type: "uint8" },
+  { name: "liquidity", type: "uint256" },
+  { name: "type", type: "int24" },  // tick spacing for CL, 0/-1 for v2
+  { name: "tick", type: "int24" },
+  { name: "sqrt_ratio", type: "uint160" },
+  { name: "token0", type: "address" },
+  { name: "reserve0", type: "uint256" },
+  { name: "staked0", type: "uint256" },
+  { name: "token1", type: "address" },
+  { name: "reserve1", type: "uint256" },
+  { name: "staked1", type: "uint256" },
+  { name: "gauge", type: "address" },
+  { name: "gauge_liquidity", type: "uint256" },
+  { name: "gauge_alive", type: "bool" },
+  { name: "fee", type: "address" },
+  { name: "bribe", type: "address" },
+  { name: "factory", type: "address" },
+  { name: "emissions", type: "uint256" },
+  { name: "emissions_token", type: "address" },
+  { name: "pool_fee", type: "uint256" },
+  { name: "unstaked_fee", type: "uint256" },
+  { name: "token0_fees", type: "uint256" },
+  { name: "token1_fees", type: "uint256" },
+  { name: "nfpm", type: "address" },
+  { name: "alm", type: "address" },
+  { name: "root", type: "address" },
+] as const;
+
+export const LP_SUGAR_ABI = [
+  {
+    type: "function",
+    name: "all",
+    stateMutability: "view",
+    inputs: [
+      { name: "_limit", type: "uint256" },
+      { name: "_offset", type: "uint256" }
+    ],
+    outputs: [{
+      name: "",
+      type: "tuple[]",
+      components: LP_STRUCT_COMPONENTS
+    }]
+  },
+  {
+    type: "function",
+    name: "byIndex",
+    stateMutability: "view",
+    inputs: [{ name: "_index", type: "uint256" }],
+    outputs: [{
+      name: "",
+      type: "tuple",
+      components: LP_STRUCT_COMPONENTS
+    }]
+  },
+  {
+    type: "function",
+    name: "byAddress",
+    stateMutability: "view",
+    inputs: [{ name: "_address", type: "address" }],
+    outputs: [{
+      name: "",
+      type: "tuple",
+      components: LP_STRUCT_COMPONENTS
+    }]
+  }
+] as const;
+
+// Slipstream Helper - Position calculations
 export const SUGAR_HELPER_ABI = [
   {
     type: "function",

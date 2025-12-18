@@ -113,6 +113,12 @@ export async function simulateInvestment(input: SimulationInput): Promise<Simula
     totalAPR: 34.625,
     gauge: '0x9876543210987654321098765432109876543210' as Address,
     isGaugeAlive: true,
+    aprChange1d: 0,
+    aprChange7d: 0,
+    aprMean30d: 34.625,
+    isStablecoin: false,
+    ilRisk: 'yes' as const,
+    prediction: 'Unknown',
   }
 
   // Calculate prices
