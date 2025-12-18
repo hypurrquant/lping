@@ -13,12 +13,15 @@ import { PoolData, PoolsAPIResponse, PoolsQueryParams } from './types'
 let poolsCache: { data: PoolData[]; timestamp: number } | null = null
 const CACHE_TTL = 2 * 60 * 1000
 
-// Token price cache (5 minute TTL)
-const tokenPriceCache = new Map<string, { price: number; decimals: number; symbol?: string; timestamp: number }>()
-const PRICE_CACHE_TTL = 5 * 60 * 1000
+// Token price cache (3 minute TTL)
+const tokenPriceCache = new Map<string, { price: number; decimals: number; symbol: string; timestamp: number }>()
+const PRICE_CACHE_TTL = 3 * 60 * 1000
 
 // Base chain ID for Enso API
 const BASE_CHAIN_ID = 8453
+
+// Enso API batch endpoint
+const ENSO_BATCH_PRICES_URL = `https://api.enso.finance/api/v1/prices/${BASE_CHAIN_ID}`
 
 // CLFactory ABI
 const CL_FACTORY_ABI = [
@@ -97,98 +100,100 @@ interface TokenPriceInfo {
   symbol: string
 }
 
-// Well-known token prices as fallback
-const KNOWN_TOKEN_PRICES: Record<string, { price: number; decimals: number; symbol: string }> = {
-  '0x4200000000000000000000000000000000000006': { price: 3500, decimals: 18, symbol: 'WETH' },
-  '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': { price: 1, decimals: 6, symbol: 'USDC' },
-  '0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca': { price: 1, decimals: 6, symbol: 'USDbC' },
-  '0x940181a94a35a4569e4529a3cdfb74e38fd98631': { price: 0.5, decimals: 18, symbol: 'AERO' },
-  '0x50c5725949a6f0c72e6c4a641f24049a917db0cb': { price: 1, decimals: 18, symbol: 'DAI' },
-  '0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22': { price: 70000, decimals: 8, symbol: 'cbBTC' },
-  '0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf': { price: 70000, decimals: 8, symbol: 'cbBTC' },
-  '0xc1cba3fcea344f92d9239c08c0568f6f2f0ee452': { price: 4000, decimals: 18, symbol: 'wstETH' },
-  '0x2416092f143378750bb29b79ed961ab195cceea5': { price: 3500, decimals: 18, symbol: 'ezETH' },
-  '0xb6fe221fe9eef5aba221c348ba20a1bf5e73624c': { price: 0.99, decimals: 18, symbol: 'rETH' },
+// Fallback token metadata (used when Enso API fails)
+const FALLBACK_TOKEN_METADATA: Record<string, { decimals: number; symbol: string }> = {
+  '0x4200000000000000000000000000000000000006': { decimals: 18, symbol: 'WETH' },
+  '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': { decimals: 6, symbol: 'USDC' },
+  '0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca': { decimals: 6, symbol: 'USDbC' },
+  '0x940181a94a35a4569e4529a3cdfb74e38fd98631': { decimals: 18, symbol: 'AERO' },
+  '0x50c5725949a6f0c72e6c4a641f24049a917db0cb': { decimals: 18, symbol: 'DAI' },
+  '0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22': { decimals: 8, symbol: 'cbBTC' },
+  '0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf': { decimals: 8, symbol: 'cbBTC' },
+  '0xc1cba3fcea344f92d9239c08c0568f6f2f0ee452': { decimals: 18, symbol: 'wstETH' },
+  '0x2416092f143378750bb29b79ed961ab195cceea5': { decimals: 18, symbol: 'ezETH' },
+  '0xb6fe221fe9eef5aba221c348ba20a1bf5e73624c': { decimals: 18, symbol: 'rETH' },
+  '0x4ed4e862860bed51a9570b96d89af5e1b0efefed': { decimals: 18, symbol: 'DEGEN' },
+  '0x0b3e328455c4059eeb9e3f84b5543f74e24e7e1b': { decimals: 18, symbol: 'VIRTUAL' },
 }
 
 /**
- * Fetch token price from Enso API with retry logic
+ * Batch fetch token prices from Enso API
+ * Uses caching to avoid redundant API calls
  */
-async function fetchTokenPrice(tokenAddress: Address): Promise<TokenPriceInfo | null> {
-  const cacheKey = tokenAddress.toLowerCase()
-  const cached = tokenPriceCache.get(cacheKey)
+async function fetchTokenPrices(addresses: Address[]): Promise<Map<string, TokenPriceInfo>> {
+  const results = new Map<string, TokenPriceInfo>()
+  const uniqueAddresses = [...new Set(addresses.map(a => a.toLowerCase() as Address))]
+  const now = Date.now()
 
-  if (cached && Date.now() - cached.timestamp < PRICE_CACHE_TTL) {
-    return { price: cached.price, decimals: cached.decimals, symbol: cached.symbol || '' }
+  // Check cache first
+  const uncachedAddresses: Address[] = []
+  for (const addr of uniqueAddresses) {
+    const cached = tokenPriceCache.get(addr)
+    if (cached && now - cached.timestamp < PRICE_CACHE_TTL) {
+      results.set(addr, { price: cached.price, decimals: cached.decimals, symbol: cached.symbol })
+    } else {
+      uncachedAddresses.push(addr)
+    }
   }
 
-  // Check known tokens first
-  const known = KNOWN_TOKEN_PRICES[cacheKey]
-  if (known) {
-    tokenPriceCache.set(cacheKey, { ...known, timestamp: Date.now() })
-    return known
+  if (uncachedAddresses.length === 0) {
+    console.log(`[poolService] All ${results.size} token prices from cache`)
+    return results
   }
 
-  // Try Enso API with retry
-  for (let attempt = 0; attempt < 3; attempt++) {
+  console.log(`[poolService] Fetching ${uncachedAddresses.length} token prices from Enso API (${results.size} cached)`)
+
+  // Batch fetch from Enso API (max 100 per request to be safe)
+  const BATCH_SIZE = 100
+  for (let i = 0; i < uncachedAddresses.length; i += BATCH_SIZE) {
+    const batch = uncachedAddresses.slice(i, i + BATCH_SIZE)
+    const addressesParam = batch.join(',')
+
     try {
-      const url = `https://api.enso.finance/api/v1/prices/${BASE_CHAIN_ID}/${tokenAddress}`
-      const response = await fetch(url, {
+      const response = await fetch(`${ENSO_BATCH_PRICES_URL}?addresses=${addressesParam}`, {
         headers: { 'Accept': 'application/json' },
         cache: 'no-store',
       })
 
-      if (response.status === 429) {
-        // Rate limited, wait and retry
-        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)))
+      if (!response.ok) {
+        console.warn(`[poolService] Enso API returned ${response.status}`)
         continue
       }
 
-      if (!response.ok) {
-        return null
-      }
-
       const data = await response.json()
-      const result = {
-        price: data.price || 0,
-        decimals: data.decimals || 18,
-        symbol: data.symbol || '',
+
+      // Handle array response
+      if (Array.isArray(data)) {
+        for (const token of data) {
+          if (token.address && token.price !== undefined) {
+            const addr = token.address.toLowerCase()
+            const priceInfo = {
+              price: token.price,
+              decimals: token.decimals || 18,
+              symbol: token.symbol || 'UNKNOWN',
+            }
+            results.set(addr, priceInfo)
+            tokenPriceCache.set(addr, { ...priceInfo, timestamp: now })
+          }
+        }
       }
-
-      tokenPriceCache.set(cacheKey, {
-        price: result.price,
-        decimals: result.decimals,
-        symbol: result.symbol,
-        timestamp: Date.now(),
-      })
-
-      return result
-    } catch {
-      if (attempt === 2) return null
-      await new Promise(resolve => setTimeout(resolve, 500))
-    }
-  }
-  return null
-}
-
-/**
- * Batch fetch token prices for multiple addresses
- * Currently uses only known token prices to avoid rate limiting
- */
-async function fetchTokenPrices(addresses: Address[]): Promise<Map<string, TokenPriceInfo>> {
-  const results = new Map<string, TokenPriceInfo>()
-  const uniqueAddresses = [...new Set(addresses.map(a => a.toLowerCase()))]
-
-  // Use known prices
-  for (const addr of uniqueAddresses) {
-    const known = KNOWN_TOKEN_PRICES[addr]
-    if (known) {
-      results.set(addr, known)
+    } catch (error) {
+      console.warn(`[poolService] Enso API batch fetch failed:`, error)
     }
   }
 
-  console.log(`[poolService] Using ${results.size} known token prices (total unique: ${uniqueAddresses.length})`)
+  // Use fallback metadata for tokens without prices
+  for (const addr of uncachedAddresses) {
+    if (!results.has(addr)) {
+      const fallback = FALLBACK_TOKEN_METADATA[addr]
+      if (fallback) {
+        // Set price to 0 but keep metadata
+        results.set(addr, { price: 0, decimals: fallback.decimals, symbol: fallback.symbol })
+      }
+    }
+  }
 
+  console.log(`[poolService] Total token prices: ${results.size}/${uniqueAddresses.length}`)
   return results
 }
 
@@ -235,7 +240,7 @@ async function fetchPoolsFromFactory(): Promise<PoolData[]> {
     const startIdx = 0  // Start from beginning (oldest pools)
 
     // Batch read pool addresses
-    const poolAddressCalls = []
+    const poolAddressCalls: { address: Address; abi: typeof CL_FACTORY_ABI; functionName: 'allPools'; args: [bigint] }[] = []
     for (let i = startIdx; i < startIdx + limit; i++) {
       poolAddressCalls.push({
         address: AERODROME_CL_FACTORY,
@@ -258,7 +263,9 @@ async function fetchPoolsFromFactory(): Promise<PoolData[]> {
 
     // First pass: get all token addresses
     const CHUNK_SIZE = 50
-    const allTokenAddresses: Address[] = []
+    // Include AERO token for emission APR calculation
+    const AERO_ADDRESS = '0x940181a94a35a4569e4529a3cdfb74e38fd98631' as Address
+    const allTokenAddresses: Address[] = [AERO_ADDRESS]
     const poolMetadataMap = new Map<string, {
       token0: Address
       token1: Address
@@ -359,13 +366,16 @@ async function fetchPoolsFromFactory(): Promise<PoolData[]> {
     console.log(`[poolService] Pools with price data: ${validPools.length}`)
 
     // Batch fetch all token balances
-    const balanceCalls = validPools.flatMap(({ poolAddress, metadata }) => [
-      { address: metadata.token0, abi: ERC20_ABI, functionName: 'balanceOf', args: [poolAddress] },
-      { address: metadata.token1, abi: ERC20_ABI, functionName: 'balanceOf', args: [poolAddress] },
-    ])
+    const balanceCalls: { address: Address; abi: typeof ERC20_ABI; functionName: 'balanceOf'; args: readonly [Address] }[] = []
+    for (const { poolAddress, metadata } of validPools) {
+      balanceCalls.push(
+        { address: metadata.token0, abi: ERC20_ABI, functionName: 'balanceOf', args: [poolAddress] as const },
+        { address: metadata.token1, abi: ERC20_ABI, functionName: 'balanceOf', args: [poolAddress] as const },
+      )
+    }
 
     const balanceResults = await publicClient.multicall({
-      contracts: balanceCalls as readonly { address: Address; abi: typeof ERC20_ABI; functionName: 'balanceOf'; args: readonly [Address] }[],
+      contracts: balanceCalls,
       allowFailure: true,
     })
 

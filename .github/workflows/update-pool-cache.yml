@@ -22,8 +22,8 @@ jobs:
       
       - name: Build pool cache
         env:
-          NEXT_PUBLIC_BASE_RPC_URL: ${{ secrets.NEXT_PUBLIC_BASE_RPC_URL || 'https://mainnet.base.org' }}
-        run: npx tsx scripts/build-pool-cache.ts
+          NEXT_PUBLIC_ONCHAINKIT_API_KEY: ${{ secrets.NEXT_PUBLIC_ONCHAINKIT_API_KEY }}
+        run: node scripts/prebuild-pool-cache.js
       
       - name: Commit and push if changed
         run: |
