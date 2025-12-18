@@ -3,10 +3,33 @@
  * Fetches tick-level liquidity data for visualization
  */
 
-import { Address, createPublicClient, http } from 'viem'
+import { Address, createPublicClient, http, formatUnits } from 'viem'
 import { base } from 'viem/chains'
-import { LiquidityDistribution, TickLiquidity } from './types'
+import { LiquidityDistribution, TickLiquidity, EmissionInfo } from './types'
 import { tickToPrice, sqrtPriceX96ToPrice } from './tickMath'
+
+// AERO price cache
+let aeroPriceCache: { price: number; timestamp: number } | null = null
+const AERO_CACHE_TTL = 5 * 60 * 1000
+
+async function getAeroPrice(): Promise<number> {
+  if (aeroPriceCache && Date.now() - aeroPriceCache.timestamp < AERO_CACHE_TTL) {
+    return aeroPriceCache.price
+  }
+
+  try {
+    const response = await fetch(
+      'https://coins.llama.fi/prices/current/base:0x940181a94A35A4569E4529A3CDfB74e38FD98631'
+    )
+    const data = await response.json()
+    const price = data.coins['base:0x940181a94A35A4569E4529A3CDfB74e38FD98631']?.price || 1.0
+
+    aeroPriceCache = { price, timestamp: Date.now() }
+    return price
+  } catch {
+    return aeroPriceCache?.price || 1.0
+  }
+}
 
 // Contract addresses
 const CL_POOL_ABI = [
@@ -87,9 +110,27 @@ const CL_GAUGE_ABI = [
     inputs: [],
     outputs: [{ type: 'uint256' }],
   },
-  // Note: Emission range is determined by gauge's tick bounds
-  // This varies by implementation - for Aerodrome, it's typically the full range
-  // or set by governance
+  {
+    name: 'rewardRateByEpoch',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'epoch', type: 'uint256' }],
+    outputs: [{ type: 'uint256' }],
+  },
+  {
+    name: 'totalSupply',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ type: 'uint256' }],
+  },
+  {
+    name: 'periodFinish',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ type: 'uint256' }],
+  },
 ] as const
 
 const ERC20_ABI = [
@@ -244,21 +285,93 @@ export async function fetchLiquidityDistribution(
       ? Number((liquidityInRange * 10000n) / totalLiquidity) / 100
       : 0
 
+    // Fetch gauge emission data
+    let emissionInfo: EmissionInfo | null = null
+    const aeroPrice = await getAeroPrice()
+
+    if (gaugeResult && gaugeResult !== '0x0000000000000000000000000000000000000000') {
+      try {
+        const [rewardRateResult, periodFinishResult] = await Promise.all([
+          publicClient.readContract({
+            address: gaugeResult as Address,
+            abi: CL_GAUGE_ABI,
+            functionName: 'rewardRate',
+          }).catch(() => 0n),
+          publicClient.readContract({
+            address: gaugeResult as Address,
+            abi: CL_GAUGE_ABI,
+            functionName: 'periodFinish',
+          }).catch(() => 0n),
+        ])
+
+        const rewardRate = rewardRateResult as bigint
+        const periodFinish = Number(periodFinishResult)
+        const isGaugeActive = periodFinish > Math.floor(Date.now() / 1000)
+
+        // AERO per second (18 decimals)
+        const aeroPerSecond = Number(formatUnits(rewardRate, 18))
+        const aeroPerDay = aeroPerSecond * 86400
+        const aeroPerWeek = aeroPerDay * 7
+        const aeroValuePerDay = aeroPerDay * aeroPrice
+
+        // Per $1000 investment calculation
+        // Simplified: assumes you get proportional share of emissions based on TVL
+        // In reality, it depends on your position's tick range overlap with emission range
+        const estimatedTVL = totalLiquidity > 0n ? Number(totalLiquidity) / 1e18 * currentPrice : 1000000
+        const shareFor1000 = 1000 / estimatedTVL
+        const aeroPerDayPer1000 = aeroPerDay * shareFor1000
+        const usdPerDayPer1000 = aeroPerDayPer1000 * aeroPrice
+
+        emissionInfo = {
+          tickLower: emissionTickLower,
+          tickUpper: emissionTickUpper,
+          priceLower: tickToPrice(emissionTickLower, decimals0, decimals1),
+          priceUpper: tickToPrice(emissionTickUpper, decimals0, decimals1),
+          liquidityInRange: liquidityInRange.toString(),
+          liquidityInRangeUSD: 0,
+          percentOfTotal,
+          aeroPerSecond,
+          aeroPerDay,
+          aeroPerWeek,
+          aeroValuePerDay,
+          aeroPerDayPer1000,
+          usdPerDayPer1000,
+          isGaugeActive,
+          periodFinish,
+        }
+      } catch (error) {
+        console.error('Error fetching gauge data:', error)
+      }
+    }
+
+    // Fallback emission info if gauge data not available
+    if (!emissionInfo) {
+      emissionInfo = {
+        tickLower: emissionTickLower,
+        tickUpper: emissionTickUpper,
+        priceLower: tickToPrice(emissionTickLower, decimals0, decimals1),
+        priceUpper: tickToPrice(emissionTickUpper, decimals0, decimals1),
+        liquidityInRange: liquidityInRange.toString(),
+        liquidityInRangeUSD: 0,
+        percentOfTotal,
+        aeroPerSecond: 0,
+        aeroPerDay: 0,
+        aeroPerWeek: 0,
+        aeroValuePerDay: 0,
+        aeroPerDayPer1000: 0,
+        usdPerDayPer1000: 0,
+        isGaugeActive: false,
+        periodFinish: 0,
+      }
+    }
+
     return {
       poolAddress,
       currentTick,
       currentPrice,
       tickSpacing,
       ticks,
-      emissionRange: {
-        tickLower: emissionTickLower,
-        tickUpper: emissionTickUpper,
-        priceLower: tickToPrice(emissionTickLower, decimals0, decimals1),
-        priceUpper: tickToPrice(emissionTickUpper, decimals0, decimals1),
-        liquidityInRange: liquidityInRange.toString(),
-        liquidityInRangeUSD: 0,  // Would need price data
-        percentOfTotal,
-      },
+      emissionRange: emissionInfo,
     }
   } catch (error) {
     console.error('Error fetching liquidity distribution:', error)

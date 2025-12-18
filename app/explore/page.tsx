@@ -243,7 +243,105 @@ export default function ExplorePage() {
                       </div>
                     </div>
                   </div>
+
+                  {/* APR Trend & Risk */}
+                  <div className="grid grid-cols-4 gap-2 pt-3 mt-3 border-t border-gray-800">
+                    <div className="text-center">
+                      <div className="text-[10px] text-gray-500 mb-1">24h</div>
+                      <div className={`text-xs font-medium ${
+                        selectedPool.aprChange1d > 0 ? 'text-emerald-400' :
+                        selectedPool.aprChange1d < 0 ? 'text-red-400' : 'text-gray-400'
+                      }`}>
+                        {selectedPool.aprChange1d > 0 ? '+' : ''}{selectedPool.aprChange1d.toFixed(1)}%
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-[10px] text-gray-500 mb-1">7d</div>
+                      <div className={`text-xs font-medium ${
+                        selectedPool.aprChange7d > 0 ? 'text-emerald-400' :
+                        selectedPool.aprChange7d < 0 ? 'text-red-400' : 'text-gray-400'
+                      }`}>
+                        {selectedPool.aprChange7d > 0 ? '+' : ''}{selectedPool.aprChange7d.toFixed(1)}%
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-[10px] text-gray-500 mb-1">30d Avg</div>
+                      <div className="text-xs font-medium text-gray-300">
+                        {selectedPool.aprMean30d.toFixed(1)}%
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-[10px] text-gray-500 mb-1">IL Risk</div>
+                      <div className={`text-xs font-medium ${
+                        selectedPool.ilRisk === 'no' || selectedPool.isStablecoin ? 'text-emerald-400' :
+                        selectedPool.ilRisk === 'yes' ? 'text-yellow-400' : 'text-gray-400'
+                      }`}>
+                        {selectedPool.isStablecoin ? 'Low' :
+                         selectedPool.ilRisk === 'yes' ? 'High' :
+                         selectedPool.ilRisk === 'no' ? 'Low' : 'Med'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Emission Info */}
+                {liquidityDistribution?.emissionRange && (
+                  <div className="bg-[#111] rounded-xl border border-gray-800 p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-medium text-white flex items-center gap-2">
+                        <span className="text-lg">🎯</span>
+                        AERO Emissions
+                      </h3>
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        liquidityDistribution.emissionRange.isGaugeActive
+                          ? 'bg-emerald-500/20 text-emerald-400'
+                          : 'bg-red-500/20 text-red-400'
+                      }`}>
+                        {liquidityDistribution.emissionRange.isGaugeActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div className="bg-[#0a0a0a] rounded-lg p-3">
+                        <div className="text-xs text-gray-500 mb-1">Daily AERO</div>
+                        <div className="text-lg font-bold text-purple-400">
+                          {liquidityDistribution.emissionRange.aeroPerDay.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          ≈ ${liquidityDistribution.emissionRange.aeroValuePerDay.toLocaleString(undefined, { maximumFractionDigits: 0 })}/day
+                        </div>
+                      </div>
+                      <div className="bg-[#0a0a0a] rounded-lg p-3">
+                        <div className="text-xs text-gray-500 mb-1">Liquidity in Range</div>
+                        <div className="text-lg font-bold text-white">
+                          {liquidityDistribution.emissionRange.percentOfTotal.toFixed(1)}%
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          of total liquidity
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Per $1000 investment */}
+                    <div className="bg-gradient-to-r from-purple-500/10 to-emerald-500/10 rounded-lg p-3 border border-purple-500/20">
+                      <div className="text-xs text-gray-400 mb-1">Per $1,000 Investment</div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-lg font-bold text-white">
+                            {liquidityDistribution.emissionRange.aeroPerDayPer1000.toFixed(2)}
+                          </span>
+                          <span className="text-sm text-gray-400 ml-1">AERO/day</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-lg font-bold text-emerald-400">
+                            ${liquidityDistribution.emissionRange.usdPerDayPer1000.toFixed(2)}
+                          </span>
+                          <span className="text-sm text-gray-400 ml-1">/day</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Liquidity Chart */}
                 {isLoadingDetail ? (

@@ -18,6 +18,14 @@ export interface PoolData {
   totalAPR: number
   gauge: Address | null
   isGaugeAlive: boolean
+  // APR trends
+  aprChange1d: number
+  aprChange7d: number
+  aprMean30d: number
+  // Risk info
+  isStablecoin: boolean
+  ilRisk: 'yes' | 'no' | 'unknown'
+  prediction: string
 }
 
 export interface TokenInfo {
@@ -36,21 +44,34 @@ export interface TickLiquidity {
   isInEmissionRange: boolean
 }
 
+export interface EmissionInfo {
+  tickLower: number
+  tickUpper: number
+  priceLower: number
+  priceUpper: number
+  liquidityInRange: string
+  liquidityInRangeUSD: number
+  percentOfTotal: number
+  // AERO emission details
+  aeroPerSecond: number
+  aeroPerDay: number
+  aeroPerWeek: number
+  aeroValuePerDay: number  // USD
+  // Per $1000 investment
+  aeroPerDayPer1000: number
+  usdPerDayPer1000: number
+  // Gauge status
+  isGaugeActive: boolean
+  periodFinish: number  // Unix timestamp
+}
+
 export interface LiquidityDistribution {
   poolAddress: Address
   currentTick: number
   currentPrice: number
   tickSpacing: number
   ticks: TickLiquidity[]
-  emissionRange: {
-    tickLower: number
-    tickUpper: number
-    priceLower: number
-    priceUpper: number
-    liquidityInRange: string
-    liquidityInRangeUSD: number
-    percentOfTotal: number
-  } | null
+  emissionRange: EmissionInfo | null
 }
 
 // Investment simulation

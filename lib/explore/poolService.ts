@@ -55,6 +55,15 @@ interface DefiLlamaPool {
   underlyingTokens: string[]
   volumeUsd1d: number | null
   volumeUsd7d: number | null
+  apyPct1D: number | null
+  apyPct7D: number | null
+  apyMean30d: number | null
+  stablecoin: boolean
+  ilRisk: string | null
+  predictions: {
+    predictedClass: string
+    predictedProbability: number
+  } | null
 }
 
 /**
@@ -163,6 +172,14 @@ function transformDefiLlamaPool(pool: DefiLlamaPool): PoolData {
     totalAPR: pool.apy || calculateTotalAPR(feeAPR, emissionAPR),
     gauge: pool.rewardTokens?.length > 0 ? (pool.rewardTokens[0] as Address) : null,
     isGaugeAlive: (pool.apyReward || 0) > 0,
+    // APR trends
+    aprChange1d: pool.apyPct1D || 0,
+    aprChange7d: pool.apyPct7D || 0,
+    aprMean30d: pool.apyMean30d || pool.apy || 0,
+    // Risk info
+    isStablecoin: pool.stablecoin || false,
+    ilRisk: (pool.ilRisk === 'yes' ? 'yes' : pool.ilRisk === 'no' ? 'no' : 'unknown') as 'yes' | 'no' | 'unknown',
+    prediction: pool.predictions?.predictedClass || 'Unknown',
   }
 }
 
