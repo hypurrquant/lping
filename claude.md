@@ -8,7 +8,7 @@ LPing is a **Farcaster Mini App** for tracking and analyzing Aerodrome Concentra
 
 ## Tech Stack
 
-- **Framework:** Next.js 15.3.4 (App Router)
+- **Framework:** Next.js 15.5.9 (App Router)
 - **UI:** React 19, Tailwind CSS 4.x
 - **Web3:** viem 2.x, wagmi 2.x, OnchainKit
 - **Charts:** Recharts 3.x
@@ -76,11 +76,13 @@ lping/
 
 ## Data Flow
 
-### Pool Data
-1. **Subgraph Query** → Fetch pool list with metrics
-2. **On-chain Enrichment** → Get gauge status, emission rates
-3. **APR Calculation** → Fee APR + Emission APR
-4. **Client Display** → Sorted, filtered pool list
+### Pool Data (On-Chain Only)
+1. **CLFactory.allPools()** → Fetch pool addresses from factory contract
+2. **Pool Metadata** → Read token0, token1, tickSpacing, slot0, gauge via multicall
+3. **Token Balances** → `ERC20.balanceOf(pool)` for accurate TVL
+4. **Gauge Data** → rewardRate, periodFinish for emission APR
+5. **Token Prices** → Known prices for major tokens (WETH, USDC, cbBTC, etc.)
+6. **Client Display** → Sorted, filtered pool list with TVL and APR
 
 ### Position Data
 1. **SugarHelper Contract** → Fetch user's CL positions
@@ -158,10 +160,13 @@ npm run test:run         # Run tests once
 
 ## Contracts (Base Mainnet)
 
-- **Aerodrome SugarHelper:** Position aggregation
-- **CL Gauge Factory:** Gauge lookups
-- **CL Pool Factory:** Pool registry
-- **AERO Token:** Reward token
+| Contract | Address | Purpose |
+|----------|---------|---------|
+| **CLFactory** | `0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A` | Pool registry, allPools() |
+| **SugarHelper** | `0x0AD09A66af0154a84e86F761313d02d0abB6edd5` | Position calculations |
+| **NPM** | `0x827922686190790b37229fd06084350E74485b72` | NFT Position Manager |
+| **LP Sugar** | `0x27fc745390d1f4BaF8D184FBd97748340f786634` | V2 pool listing (not used) |
+| **AERO Token** | `0x940181a94A35A4569E4529A3CDfB74e38FD98631` | Reward token |
 
 ## Mini App Integration
 
@@ -176,5 +181,30 @@ npm run test:run         # Run tests once
 1. **Scrolling:** Handled by Base App natively, don't override
 2. **Wallet Errors:** Suppressed via early-loading scripts
 3. **Pool Cache:** Pre-built during `npm run build` for faster loads
-4. **Subgraph:** Uses Aerodrome's public subgraph endpoint
-5. **Prices:** Derived from on-chain sqrtPriceX96 or external APIs
+4. **Subgraph:** Available but not used for pool discovery (on-chain only)
+5. **Prices:** Uses `KNOWN_TOKEN_PRICES` in poolService.ts for major tokens
+
+## Pool Service Implementation
+
+The pool discovery (`lib/explore/poolService.ts`) fetches data entirely on-chain:
+
+```typescript
+// Key implementation details:
+// 1. CLFactory.allPools() to get pool addresses (first 200 pools)
+// 2. Multicall for batch RPC: token metadata, balances, gauge data
+// 3. Known token prices for WETH, USDC, cbBTC, etc.
+// 4. TVL = sum(tokenBalance * tokenPrice) for each pool
+// 5. EmissionAPR = (rewardRate * 365 days * AERO price) / TVL
+
+const KNOWN_TOKEN_PRICES = {
+  '0x4200000000000000000000000000000000000006': { price: 3500, symbol: 'WETH' },
+  '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': { price: 1, symbol: 'USDC' },
+  '0x940181a94a35a4569e4529a3cdfb74e38fd98631': { price: 0.5, symbol: 'AERO' },
+  // ... more tokens
+}
+```
+
+**Future Improvements:**
+- Integrate Enso API (`api.enso.finance/api/v1/prices/{chainId}/{address}`) for dynamic prices
+- Add rate limiting / API key for production
+- Expand token price coverage
