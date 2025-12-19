@@ -80,6 +80,7 @@ export default function ExplorePage() {
     }
 
     fetchPoolDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPool?.id]);
 
   return (

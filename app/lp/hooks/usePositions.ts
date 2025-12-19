@@ -142,6 +142,7 @@ export function usePositions(ownerAddress?: Address, isConnected = false) {
     // Always fetch when ownerAddress changes
     console.log('[usePositions] Fetching positions for ownerAddress:', ownerAddress);
     fetchPositions(false, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ownerAddress, fetchPositions]);
   
   // Clear positions when wallet disconnects (but not when viewing an address)

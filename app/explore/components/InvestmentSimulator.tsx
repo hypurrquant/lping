@@ -113,6 +113,7 @@ export default function InvestmentSimulator({
 
   useEffect(() => {
     runSimulation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool.id, investmentAmount, rangePreset, customRange]);
 
   const formatUSD = (value: number) => {

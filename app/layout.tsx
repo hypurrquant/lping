@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Inter, Source_Code_Pro } from "next/font/google";
 import { SafeArea } from "@coinbase/onchainkit/minikit";
@@ -9,6 +9,14 @@ import { MiniAppInitializer } from "./components/MiniAppInitializer";
 import BottomNav from "../components/BottomNav";
 import "./globals.css";
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover", // Important for Base App mini apps
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const ROOT_URL =
     process.env.NEXT_PUBLIC_ROOT_URL ||
@@ -18,13 +26,6 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: minikitConfig.miniapp.name,
     description: minikitConfig.miniapp.description,
-    viewport: {
-      width: "device-width",
-      initialScale: 1,
-      maximumScale: 5,
-      userScalable: true,
-      viewportFit: "cover", // Important for Base App mini apps
-    },
     other: {
       "fc:frame": JSON.stringify({
         version: minikitConfig.miniapp.version,
