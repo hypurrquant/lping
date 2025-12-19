@@ -1,92 +1,56 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import PoolList from "./components/PoolList";
-import LiquidityChart from "./components/LiquidityChart";
-import InvestmentSimulator from "./components/InvestmentSimulator";
-import {
-  PoolData,
-  PoolsAPIResponse,
-  LiquidityDistribution,
-} from "@/lib/explore/types";
-
-type SortOption = "apr" | "tvl" | "volume" | "fees";
+import { useRouter } from "next/navigation";
+import { PoolData, PoolsAPIResponse } from "@/lib/explore/types";
+import { getCuratedAddresses } from "@/lib/explore/curatedPools";
 
 export default function ExplorePage() {
-  // State
+  const router = useRouter();
   const [pools, setPools] = useState<PoolData[]>([]);
-  const [selectedPool, setSelectedPool] = useState<PoolData | null>(null);
-  const [liquidityDistribution, setLiquidityDistribution] =
-    useState<LiquidityDistribution | null>(null);
-  const [liquidityHistogram, setLiquidityHistogram] = useState<
-    { price: number; liquidity: number; isInEmissionRange: boolean }[]
-  >([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Filters
-  const [sortBy, setSortBy] = useState<SortOption>("apr");
-  const [tokenFilter, setTokenFilter] = useState("");
-  const [minTVL, setMinTVL] = useState("");
-
-  // Loading states
-  const [isLoadingPools, setIsLoadingPools] = useState(true);
-  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
-
-  // Fetch pools
+  // Fetch curated pools
   useEffect(() => {
     async function fetchPools() {
-      setIsLoadingPools(true);
+      setIsLoading(true);
       try {
-        const params = new URLSearchParams({
-          sortBy,
-          sortOrder: "desc",
-          limit: "50",
-        });
-        if (tokenFilter) params.set("token", tokenFilter);
-        if (minTVL) params.set("minTVL", minTVL);
-
-        const response = await fetch(`/api/pools?${params}`);
+        const response = await fetch(`/api/pools?sortBy=tvl&sortOrder=desc&limit=100`);
         const data: PoolsAPIResponse = await response.json();
-        setPools(data.pools);
+
+        // Filter to only curated pools
+        const curatedAddresses = getCuratedAddresses();
+        const curatedPools = data.pools.filter((pool) =>
+          curatedAddresses.includes(pool.id.toLowerCase())
+        );
+
+        // Sort by TVL
+        curatedPools.sort((a, b) => b.tvlUSD - a.tvlUSD);
+
+        setPools(curatedPools);
       } catch (error) {
         console.error("Error fetching pools:", error);
       } finally {
-        setIsLoadingPools(false);
+        setIsLoading(false);
       }
     }
 
     fetchPools();
-  }, [sortBy, tokenFilter, minTVL]);
+  }, []);
 
-  // Fetch pool detail when selected
-  useEffect(() => {
-    async function fetchPoolDetail() {
-      if (!selectedPool) {
-        setLiquidityDistribution(null);
-        setLiquidityHistogram([]);
-        return;
-      }
+  const formatTVL = (tvl: number) => {
+    if (tvl >= 1000000) return `$${(tvl / 1000000).toFixed(1)}M`;
+    if (tvl >= 1000) return `$${(tvl / 1000).toFixed(0)}K`;
+    return `$${tvl.toFixed(0)}`;
+  };
 
-      setIsLoadingDetail(true);
-      try {
-        const response = await fetch(`/api/pools/${selectedPool.id}`);
-        const data = await response.json();
-        setLiquidityDistribution(data.liquidityDistribution);
-        setLiquidityHistogram(data.liquidityHistogram || []);
-      } catch (error) {
-        console.error("Error fetching pool detail:", error);
-      } finally {
-        setIsLoadingDetail(false);
-      }
-    }
-
-    fetchPoolDetail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPool?.id]);
+  const handlePoolClick = (pool: PoolData) => {
+    router.push(`/explore/${pool.id}`);
+  };
 
   return (
-    <div className="min-h-screen bg-black text-white pb-4">
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-4">
+    <div className="min-h-screen bg-black text-white pb-20">
+      <main className="max-w-2xl mx-auto px-4 py-4">
         {/* Page Title */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -106,287 +70,106 @@ export default function ExplorePage() {
             Discover
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Find pools, analyze APR breakdown, and simulate your investment
+            Curated high-quality Aerodrome CL pools
           </p>
         </div>
 
-        {/* Filters */}
-        <div className="bg-[#111] rounded-xl border border-gray-800 p-4 mb-6">
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Sort */}
-            <div>
-              <label className="text-[10px] text-gray-500 block mb-1">
-                Sort By
-              </label>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="bg-[#0a0a0a] border border-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500"
+        {/* Pool List */}
+        {isLoading ? (
+          <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-[#111] rounded-xl border border-gray-800 p-4 animate-pulse"
               >
-                <option value="apr">APR (Highest)</option>
-                <option value="tvl">TVL (Highest)</option>
-                <option value="volume">Volume (Highest)</option>
-                <option value="fees">Fees (Highest)</option>
-              </select>
-            </div>
-
-            {/* Token Filter */}
-            <div>
-              <label className="text-[10px] text-gray-500 block mb-1">
-                Filter by Token
-              </label>
-              <input
-                type="text"
-                value={tokenFilter}
-                onChange={(e) => setTokenFilter(e.target.value)}
-                placeholder="WETH, USDC..."
-                className="bg-[#0a0a0a] border border-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500 w-32"
-              />
-            </div>
-
-            {/* Min TVL */}
-            <div>
-              <label className="text-[10px] text-gray-500 block mb-1">
-                Min TVL
-              </label>
-              <input
-                type="text"
-                value={minTVL}
-                onChange={(e) =>
-                  setMinTVL(e.target.value.replace(/[^0-9]/g, ""))
-                }
-                placeholder="100000"
-                className="bg-[#0a0a0a] border border-gray-800 rounded-lg px-3 py-2 text-sm outline-none focus:border-emerald-500 w-28"
-              />
-            </div>
-
-            {/* Clear Filters */}
-            {(tokenFilter || minTVL) && (
+                <div className="h-5 bg-gray-800 rounded w-32 mb-2" />
+                <div className="h-4 bg-gray-800 rounded w-24" />
+              </div>
+            ))}
+          </div>
+        ) : pools.length === 0 ? (
+          <div className="bg-[#111] rounded-xl border border-gray-800 p-8 text-center">
+            <div className="text-4xl mb-3">🔍</div>
+            <div className="text-gray-400">No pools available</div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {pools.map((pool) => (
               <button
-                onClick={() => {
-                  setTokenFilter("");
-                  setMinTVL("");
-                }}
-                className="text-xs text-gray-400 hover:text-white mt-4"
+                key={pool.id}
+                onClick={() => handlePoolClick(pool)}
+                className="w-full bg-[#111] rounded-xl border border-gray-800 p-4 hover:border-emerald-500/50 hover:bg-[#151515] transition text-left"
               >
-                Clear Filters
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-white">
+                      {pool.token0.symbol}/{pool.token1.symbol}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {formatTVL(pool.tvlUSD)} TVL • {(pool.fee / 10000).toFixed(2)}% fee
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-emerald-400">
+                      {pool.totalAPR.toFixed(1)}%
+                    </div>
+                    <div className="text-[10px] text-gray-500">APR</div>
+                  </div>
+                </div>
+
+                {/* APR Breakdown Bar */}
+                <div className="mt-3 flex items-center gap-2">
+                  <div className="flex-1 h-1.5 bg-gray-800 rounded-full overflow-hidden flex">
+                    {pool.feeAPR > 0 && (
+                      <div
+                        className="h-full bg-blue-500"
+                        style={{
+                          width: `${(pool.feeAPR / pool.totalAPR) * 100}%`,
+                        }}
+                      />
+                    )}
+                    {pool.emissionAPR > 0 && (
+                      <div
+                        className="h-full bg-purple-500"
+                        style={{
+                          width: `${(pool.emissionAPR / pool.totalAPR) * 100}%`,
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px]">
+                    {pool.feeAPR > 0 && (
+                      <span className="text-blue-400">Fee {pool.feeAPR.toFixed(1)}%</span>
+                    )}
+                    {pool.emissionAPR > 0 && (
+                      <span className="text-purple-400">AERO {pool.emissionAPR.toFixed(1)}%</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Risk & Status */}
+                <div className="mt-2 flex items-center gap-2">
+                  {pool.isGaugeAlive && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">
+                      Active Gauge
+                    </span>
+                  )}
+                  <span
+                    className={`text-[10px] px-1.5 py-0.5 rounded ${
+                      pool.isStablecoin || pool.ilRisk === "no"
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : pool.ilRisk === "yes"
+                          ? "bg-yellow-500/20 text-yellow-400"
+                          : "bg-gray-500/20 text-gray-400"
+                    }`}
+                  >
+                    {pool.isStablecoin ? "Stable" : pool.ilRisk === "no" ? "Low IL" : "IL Risk"}
+                  </span>
+                </div>
               </button>
-            )}
+            ))}
           </div>
-        </div>
-
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left: Pool List */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-medium text-white">
-                Available Pools ({pools.length})
-              </h2>
-            </div>
-            <div className="max-h-[calc(100vh-350px)] overflow-y-auto pr-2">
-              <PoolList
-                pools={pools}
-                onSelectPool={setSelectedPool}
-                selectedPoolId={selectedPool?.id}
-                isLoading={isLoadingPools}
-              />
-            </div>
-          </div>
-
-          {/* Right: Pool Detail & Simulator */}
-          <div>
-            {selectedPool ? (
-              <div className="space-y-4">
-                {/* Pool Header with APR Breakdown */}
-                <div className="bg-[#111] rounded-xl border border-gray-800 p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h2 className="text-lg font-bold text-white">
-                        {selectedPool.token0.symbol}/
-                        {selectedPool.token1.symbol}
-                      </h2>
-                      <div className="text-xs text-gray-500 mt-1">
-                        Fee: {(selectedPool.fee / 10000).toFixed(2)}% • Tick
-                        Spacing: {selectedPool.tickSpacing}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-emerald-400">
-                        {selectedPool.totalAPR.toFixed(1)}%
-                      </div>
-                      <div className="text-xs text-gray-500">Total APR</div>
-                    </div>
-                  </div>
-
-                  {/* APR Breakdown */}
-                  <div className="grid grid-cols-3 gap-3 pt-3 border-t border-gray-800">
-                    <div className="text-center">
-                      <div className="text-xs text-gray-500 mb-1">Fee APR</div>
-                      <div className="text-sm font-semibold text-blue-400">
-                        {selectedPool.feeAPR.toFixed(1)}%
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xs text-gray-500 mb-1">Emission APR</div>
-                      <div className="text-sm font-semibold text-purple-400">
-                        {selectedPool.emissionAPR.toFixed(1)}%
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xs text-gray-500 mb-1">TVL</div>
-                      <div className="text-sm font-semibold text-white">
-                        ${selectedPool.tvlUSD >= 1000000
-                          ? (selectedPool.tvlUSD / 1000000).toFixed(2) + 'M'
-                          : selectedPool.tvlUSD >= 1000
-                            ? (selectedPool.tvlUSD / 1000).toFixed(0) + 'K'
-                            : selectedPool.tvlUSD.toFixed(0)}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* APR Trend & Risk */}
-                  <div className="grid grid-cols-4 gap-2 pt-3 mt-3 border-t border-gray-800">
-                    <div className="text-center">
-                      <div className="text-[10px] text-gray-500 mb-1">24h</div>
-                      <div className={`text-xs font-medium ${
-                        selectedPool.aprChange1d > 0 ? 'text-emerald-400' :
-                        selectedPool.aprChange1d < 0 ? 'text-red-400' : 'text-gray-400'
-                      }`}>
-                        {selectedPool.aprChange1d > 0 ? '+' : ''}{selectedPool.aprChange1d.toFixed(1)}%
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-[10px] text-gray-500 mb-1">7d</div>
-                      <div className={`text-xs font-medium ${
-                        selectedPool.aprChange7d > 0 ? 'text-emerald-400' :
-                        selectedPool.aprChange7d < 0 ? 'text-red-400' : 'text-gray-400'
-                      }`}>
-                        {selectedPool.aprChange7d > 0 ? '+' : ''}{selectedPool.aprChange7d.toFixed(1)}%
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-[10px] text-gray-500 mb-1">30d Avg</div>
-                      <div className="text-xs font-medium text-gray-300">
-                        {selectedPool.aprMean30d.toFixed(1)}%
-                      </div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-[10px] text-gray-500 mb-1">IL Risk</div>
-                      <div className={`text-xs font-medium ${
-                        selectedPool.ilRisk === 'no' || selectedPool.isStablecoin ? 'text-emerald-400' :
-                        selectedPool.ilRisk === 'yes' ? 'text-yellow-400' : 'text-gray-400'
-                      }`}>
-                        {selectedPool.isStablecoin ? 'Low' :
-                         selectedPool.ilRisk === 'yes' ? 'High' :
-                         selectedPool.ilRisk === 'no' ? 'Low' : 'Med'}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Emission Info */}
-                {liquidityDistribution?.emissionRange && (
-                  <div className="bg-[#111] rounded-xl border border-gray-800 p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-sm font-medium text-white flex items-center gap-2">
-                        <span className="text-lg">🎯</span>
-                        AERO Emissions
-                      </h3>
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        liquidityDistribution.emissionRange.isGaugeActive
-                          ? 'bg-emerald-500/20 text-emerald-400'
-                          : 'bg-red-500/20 text-red-400'
-                      }`}>
-                        {liquidityDistribution.emissionRange.isGaugeActive ? 'Active' : 'Inactive'}
-                      </span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 mb-3">
-                      <div className="bg-[#0a0a0a] rounded-lg p-3">
-                        <div className="text-xs text-gray-500 mb-1">Daily AERO</div>
-                        <div className="text-lg font-bold text-purple-400">
-                          {liquidityDistribution.emissionRange.aeroPerDay.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          ≈ ${liquidityDistribution.emissionRange.aeroValuePerDay.toLocaleString(undefined, { maximumFractionDigits: 0 })}/day
-                        </div>
-                      </div>
-                      <div className="bg-[#0a0a0a] rounded-lg p-3">
-                        <div className="text-xs text-gray-500 mb-1">Liquidity in Range</div>
-                        <div className="text-lg font-bold text-white">
-                          {liquidityDistribution.emissionRange.percentOfTotal.toFixed(1)}%
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          of total liquidity
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Per $1000 investment */}
-                    <div className="bg-gradient-to-r from-purple-500/10 to-emerald-500/10 rounded-lg p-3 border border-purple-500/20">
-                      <div className="text-xs text-gray-400 mb-1">Per $1,000 Investment</div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <span className="text-lg font-bold text-white">
-                            {liquidityDistribution.emissionRange.aeroPerDayPer1000.toFixed(2)}
-                          </span>
-                          <span className="text-sm text-gray-400 ml-1">AERO/day</span>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-lg font-bold text-emerald-400">
-                            ${liquidityDistribution.emissionRange.usdPerDayPer1000.toFixed(2)}
-                          </span>
-                          <span className="text-sm text-gray-400 ml-1">/day</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Liquidity Chart */}
-                {isLoadingDetail ? (
-                  <div className="bg-[#111] rounded-xl border border-gray-800 p-8 text-center">
-                    <div className="animate-spin w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto mb-3" />
-                    <div className="text-gray-400">
-                      Loading liquidity data...
-                    </div>
-                  </div>
-                ) : liquidityDistribution ? (
-                  <LiquidityChart
-                    distribution={liquidityDistribution}
-                    histogram={liquidityHistogram}
-                  />
-                ) : null}
-
-                {/* Investment Simulator */}
-                {liquidityDistribution && (
-                  <InvestmentSimulator
-                    pool={selectedPool}
-                    distribution={liquidityDistribution}
-                  />
-                )}
-
-                {/* Action Button */}
-                <button className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl transition shadow-lg shadow-emerald-500/20">
-                  Create Position
-                </button>
-              </div>
-            ) : (
-              <div className="bg-[#111] rounded-xl border border-gray-800 p-8 text-center h-full min-h-[400px] flex flex-col items-center justify-center">
-                <div className="text-6xl mb-4">👈</div>
-                <div className="text-xl font-medium text-white mb-2">
-                  Select a Pool
-                </div>
-                <div className="text-gray-400 text-sm">
-                  Choose a pool from the list to view liquidity distribution
-                  <br />
-                  and simulate your investment
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        )}
       </main>
     </div>
   );
