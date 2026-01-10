@@ -1,91 +1,385 @@
 {
-  "generatedAt": "2026-01-10T00:33:30.257Z",
+  "generatedAt": "2026-01-10T06:11:20.749Z",
   "totalPoolsInFactory": 2778,
-  "includedPools": 12,
+  "includedPools": 54,
   "pools": [
     {
-      "pool": "0x336e9f2fdce2f9168f9edfeb7464a1011cfa27a9",
-      "token0": "0x02ad8bacb115267e067dba28ccbd547df920131e",
-      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "pool": "0xda6e12d715775d61c91da9d0ddc36a1f6a2fb536",
+      "token0": "0x4200000000000000000000000000000000000006",
+      "token1": "0xebb89d47d74f03453666d8264cd77f62252c90dd",
       "tickSpacing": 2000,
-      "index": 2589
-    },
-    {
-      "pool": "0xdef47acf0c3c24e62afe0189a7a06d880dc1fad8",
-      "token0": "0x1435cff069adba08bce2e56dec3a5b7e948ce300",
-      "token1": "0x92c4cc88e010d772cee651fbfceebc4f0e12d500",
-      "tickSpacing": 100,
-      "index": 2588
-    },
-    {
-      "pool": "0x7df4b8ee052b77bcce1cd1d7eeadaa42ab9b30c8",
-      "token0": "0x1f5ad75f5f89ac1627a590f5cdf7a1248e87a9ad",
-      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
-      "tickSpacing": 200,
-      "index": 2587
-    },
-    {
-      "pool": "0x44906870037c2aa78a64dd71d5ac0d51c69659f1",
-      "token0": "0x1a0bb66f2e3e33aa214b1ae1690ac0b105722100",
-      "token1": "0x92c4cc88e010d772cee651fbfceebc4f0e12d500",
-      "tickSpacing": 100,
-      "index": 2586
-    },
-    {
-      "pool": "0x1c7d7e335869e857de02db597eebf70b26d29632",
-      "token0": "0x13d1d5e4eefbe25b352fae57b67c5db131224d85",
-      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
-      "tickSpacing": 2000,
-      "index": 2585
-    },
-    {
-      "pool": "0xf72e2484a605e76396d6787020e03982216ac63a",
-      "token0": "0x92c4cc88e010d772cee651fbfceebc4f0e12d500",
-      "token1": "0xf4ddf302e97eb35bd5c880a0ce43bc11b34abd53",
-      "tickSpacing": 100,
-      "index": 2584
-    },
-    {
-      "pool": "0x90c69e850f5d5512ebdc79cfdc8ae542131abccf",
-      "token0": "0x59c66cb832dffb6d586ad2cdfdf3845037f3fc6f",
-      "token1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
-      "tickSpacing": 100,
-      "index": 2583
-    },
-    {
-      "pool": "0x353cbc39051a8bc83f2bdb74dc63432a163241cb",
-      "token0": "0x1c61629598e4a901136a81bc138e5828dc150d67",
-      "token1": "0xecb681c3c656a5436834f21a74a9b4132ca2a6f7",
-      "tickSpacing": 100,
-      "index": 2582
-    },
-    {
-      "pool": "0x95b92c0edb7d52cef35dfce13c0ba1c7a0b2cbc4",
-      "token0": "0x352637f67754cdfd77a0d5767b2e20f3fa646fb6",
-      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
-      "tickSpacing": 100,
       "index": 2581
     },
     {
-      "pool": "0x3f9732cc5225c066791412e40e334ec2800beda7",
-      "token0": "0x445040ffaab67992ba1020ec2558cd6754d83ad6",
-      "token1": "0x55bc45e4b87eed901d07d5514c918a42f6c444ac",
-      "tickSpacing": 2000,
+      "pool": "0x5bd4c86ab1e0a3661f5e1c718781bc60216a368b",
+      "token0": "0x1b4617734c43f6159f3a70b7e06d883647512778",
+      "token1": "0x307113aa1cf45f5905045b476d322871ada009eb",
+      "tickSpacing": 200,
       "index": 2580
     },
     {
-      "pool": "0x922dd56babceeaa09486713ce71c1c9c1f7285cf",
-      "token0": "0x4200000000000000000000000000000000000006",
-      "token1": "0xbfbd9a11a91359f9e8c3f7e4d3d9c2783a62fa47",
-      "tickSpacing": 2000,
+      "pool": "0xe668a3d99c702032679537cad3396e5aa62aceb8",
+      "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "token1": "0xc6473bb46a84e74386b6371197e2851ca98edf3b",
+      "tickSpacing": 200,
       "index": 2579
     },
     {
-      "pool": "0xc719bdf7593012613cabaf5d0d24e7c83c327c2e",
-      "token0": "0x0db296ad7678d70b8b417363dedd83e9bf3d6e9b",
+      "pool": "0x3f459b326a3a615f720b97f4e3d2b921dd6ae4d8",
+      "token0": "0x1b4617734c43f6159f3a70b7e06d883647512778",
+      "token1": "0x3e607bd2379821e8434afc0c88dddc90506552fd",
+      "tickSpacing": 200,
+      "index": 2578
+    },
+    {
+      "pool": "0xd3085d773a2ec08cb72dbb435c9b815d5880dc0e",
+      "token0": "0x132db528053bc61068df29c405d3fad1071c8af8",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2577
+    },
+    {
+      "pool": "0x309956522f87fb0f218f88fc605c2cb3a3adf612",
+      "token0": "0x099a87d4da709dab5155931f6aa66452e46b0191",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2576
+    },
+    {
+      "pool": "0x15c4a8fca0a4b9d4771280408a74d309d0b903ac",
+      "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "token1": "0xc7624a8f0ab764a5b7c79fb7258cf9733f74577f",
+      "tickSpacing": 200,
+      "index": 2575
+    },
+    {
+      "pool": "0x33cb9592f638892167719adc47f50d54be9000c8",
+      "token0": "0x0d9faea56187818a04dec1fe1796b06f73f00831",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2574
+    },
+    {
+      "pool": "0x68fd9d8d1ca1b1b2f57d1fa18cc93e914fa20fee",
+      "token0": "0x0e6ffb8c20832db64aa3731cf7a77c09e40c62c2",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2573
+    },
+    {
+      "pool": "0x2b63137dc46fc23c239a89aacb6aea35ea297c1e",
+      "token0": "0x0ca8d06bfc17b68db7848ee8a3ed8542e9284617",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2572
+    },
+    {
+      "pool": "0x94a24f0e56663c58ad7a14843065384f8318e0f7",
+      "token0": "0x341d1deb1d015b15e5599c4528e54f396a8b67fe",
       "token1": "0x92c4cc88e010d772cee651fbfceebc4f0e12d500",
       "tickSpacing": 100,
-      "index": 2578
+      "index": 2571
+    },
+    {
+      "pool": "0xfc1b7d72d43d9f916de61600039a95da75be273b",
+      "token0": "0x0e33f4d86369e5c2dbdd17172ed04138d155f132",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2570
+    },
+    {
+      "pool": "0xd8745f51ecbc3b20c4a4d2a8b7e08d02dbbe685d",
+      "token0": "0x1f0b9272e2cf13c6d31ef31a9701c7426f095758",
+      "token1": "0x92c4cc88e010d772cee651fbfceebc4f0e12d500",
+      "tickSpacing": 100,
+      "index": 2569
+    },
+    {
+      "pool": "0xc54291acf24a53de33214f4996a4ec322305f825",
+      "token0": "0x0bc71026194b4c44b8387d4acf08e15a668374ed",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2568
+    },
+    {
+      "pool": "0xce95e1aee284102818277fa75ca86d5f9d166021",
+      "token0": "0x08d596eaa5e58c02ddc9808ebd074b32725372ae",
+      "token1": "0x92c4cc88e010d772cee651fbfceebc4f0e12d500",
+      "tickSpacing": 100,
+      "index": 2567
+    },
+    {
+      "pool": "0x54509b8257e887d80e518325ee016d9333d79288",
+      "token0": "0x12069f41f826ef78d2dcba562c0e1db201bd4175",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2566
+    },
+    {
+      "pool": "0x1b5b3fdd6d0b6586fae1c0787783d791a2d5a0e6",
+      "token0": "0x00b607ef5146a8b145205cf7865231ead069acbd",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2565
+    },
+    {
+      "pool": "0x07ba608b5c800de201101422a3d01cbfe7824da0",
+      "token0": "0x4200000000000000000000000000000000000006",
+      "token1": "0xd4a9890e8c04e74bdad3db0e4a3d0d72d10c6204",
+      "tickSpacing": 2000,
+      "index": 2564
+    },
+    {
+      "pool": "0x14a94925be9fd33e3fa70c7109d780e7796f8ca2",
+      "token0": "0x0b28470a8e02911bd31419e148aecd8a5b9315e9",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2563
+    },
+    {
+      "pool": "0xc32e100e6c16e10fe6ac4718673dbd973d46cf61",
+      "token0": "0x13ec3843737507f01732c9765ef833bca0f6b67a",
+      "token1": "0x151ccc74972a6f85690afe997d0fdd69efdc71fe",
+      "tickSpacing": 2000,
+      "index": 2562
+    },
+    {
+      "pool": "0xa822fd43c705e28cfeedca17b033fa4ba7a6c9e3",
+      "token0": "0x19104cb8c57cdfb1bcfa17a1635fb7f331fe5e31",
+      "token1": "0x8f54785ec111c5eb4b6fe4cd7ac596af01fcc5fa",
+      "tickSpacing": 2000,
+      "index": 2561
+    },
+    {
+      "pool": "0x2ea640ef58187fba727adc7913f7c149e845e6b6",
+      "token0": "0x182be080dad00b5e170f30f0ad944c2e16eecd57",
+      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "tickSpacing": 200,
+      "index": 2560
+    },
+    {
+      "pool": "0x03a204736708adaed45654bd27fd61e88ff7aba8",
+      "token0": "0x037e123caf7d6729e8f01a8d5cd6d39e38abc19c",
+      "token1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+      "tickSpacing": 2000,
+      "index": 2559
+    },
+    {
+      "pool": "0x10c258dcb848710e5e8a0878f18d84c671632871",
+      "token0": "0x1c61629598e4a901136a81bc138e5828dc150d67",
+      "token1": "0x6d0a6bfb4a4d75a5ebe4596e23e39bf431c91c31",
+      "tickSpacing": 2000,
+      "index": 2558
+    },
+    {
+      "pool": "0x3347cfe952ee85e991c39b3e0590c0d637a3067b",
+      "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "token1": "0x887733baa2201b84980d2dd1cef59eaf52cca6c7",
+      "tickSpacing": 2000,
+      "index": 2557
+    },
+    {
+      "pool": "0x4ee9debfac50e56646a5fd1b90bd7b76f2b8bd6d",
+      "token0": "0xa3b8e87977b2fc27e7215e5379492feefdbf1d7d",
+      "token1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+      "tickSpacing": 2000,
+      "index": 2556
+    },
+    {
+      "pool": "0xd070f4f57c4874d0fbe0f244d4f0f3903c9dc09f",
+      "token0": "0x1c61629598e4a901136a81bc138e5828dc150d67",
+      "token1": "0x4206d283a164878f143c7562d1c086badef93ac5",
+      "tickSpacing": 2000,
+      "index": 2555
+    },
+    {
+      "pool": "0x20f56217fb541ef1722793e470abf1f2e68e0646",
+      "token0": "0x21572cb1d2fa0b207baa6dc306a73bae8c70d801",
+      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "tickSpacing": 2000,
+      "index": 2554
+    },
+    {
+      "pool": "0xcc068d4afd5a84b0c570ed6c89d87b82331e4d60",
+      "token0": "0x445040ffaab67992ba1020ec2558cd6754d83ad6",
+      "token1": "0xa44650dd4575381fefa42a4d831e30862d7cc531",
+      "tickSpacing": 2000,
+      "index": 2553
+    },
+    {
+      "pool": "0xbe3a8d10c5b28c40670138ce272c77ce426793cc",
+      "token0": "0x4200000000000000000000000000000000000006",
+      "token1": "0x52591cc3020e3638c38cfb791ffcd8dd463a79e1",
+      "tickSpacing": 2000,
+      "index": 2552
+    },
+    {
+      "pool": "0x7fdf0a3629a894e077f7e8d9998e9fde13edc8f2",
+      "token0": "0xc9631e376c7799770da34b2777857f647ca9993e",
+      "token1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+      "tickSpacing": 2000,
+      "index": 2551
+    },
+    {
+      "pool": "0x05a22b5b1576f5a03925b336620c2daed8e272ef",
+      "token0": "0x1c61629598e4a901136a81bc138e5828dc150d67",
+      "token1": "0xd3a5dea7c2dcc617e532482a1e67914b5482e5bd",
+      "tickSpacing": 2000,
+      "index": 2550
+    },
+    {
+      "pool": "0xa542e6f843df24fc9f7a1ee016cb8c14cde9a1bb",
+      "token0": "0x03ddad032d9a9ba8902f171c2622ca5c92791663",
+      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "tickSpacing": 2000,
+      "index": 2549
+    },
+    {
+      "pool": "0xe62fd54e880fb744b0c0b456e6a41006f915c9b4",
+      "token0": "0x399e520630f2e9e3637462aba41b193b031c9731",
+      "token1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+      "tickSpacing": 2000,
+      "index": 2548
+    },
+    {
+      "pool": "0x4da61122da424a045235950c106477b2f897638c",
+      "token0": "0x1c61629598e4a901136a81bc138e5828dc150d67",
+      "token1": "0xa0bd16231fccb1178414d821aff9d4a330451037",
+      "tickSpacing": 2000,
+      "index": 2547
+    },
+    {
+      "pool": "0x1a77a33680ff266e7fb7967e661edf99ca33025a",
+      "token0": "0x134c0b19199ada3068159cc4d55dc7a109237ab2",
+      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "tickSpacing": 2000,
+      "index": 2546
+    },
+    {
+      "pool": "0xff6341625a213653b8843d43f974e4c06cf79add",
+      "token0": "0x445040ffaab67992ba1020ec2558cd6754d83ad6",
+      "token1": "0x9f60dce855ef5bba1533baad22f22092ef88fa4c",
+      "tickSpacing": 2000,
+      "index": 2545
+    },
+    {
+      "pool": "0xb355968a1471cee23714aa012e9323e2c492c7ba",
+      "token0": "0x4200000000000000000000000000000000000006",
+      "token1": "0x5fdbcd92deb3bc1f45e9874dd8cd0fc110c19ec8",
+      "tickSpacing": 2000,
+      "index": 2544
+    },
+    {
+      "pool": "0xaa62621ff6d9258b1f7bc4f6a2e6c1c1f737c429",
+      "token0": "0x4200000000000000000000000000000000000006",
+      "token1": "0xd37ed9fc46c516aab1e33bf0d347135bf55ed8d0",
+      "tickSpacing": 2000,
+      "index": 2543
+    },
+    {
+      "pool": "0xf56a8418eb31346cfcc6214b7ce28fc381feceaf",
+      "token0": "0x1728ff789781ccc47a6a923c284dcf1e4d581620",
+      "token1": "0x4200000000000000000000000000000000000006",
+      "tickSpacing": 2000,
+      "index": 2542
+    },
+    {
+      "pool": "0xe10c6e659783dc39ec6bf3e23f068050101eeab9",
+      "token0": "0x4200000000000000000000000000000000000006",
+      "token1": "0x78cd95aacebbe03323b4dd56df090adaf13bd64b",
+      "tickSpacing": 2000,
+      "index": 2541
+    },
+    {
+      "pool": "0xc0c194b669a1be32f361714b122f02b4ee9cbaae",
+      "token0": "0xa630df2d5bf719df08514f8336212587820d2122",
+      "token1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+      "tickSpacing": 2000,
+      "index": 2540
+    },
+    {
+      "pool": "0xd3536f077343ccae44a294bcf8fd45ebec58b59a",
+      "token0": "0x1c61629598e4a901136a81bc138e5828dc150d67",
+      "token1": "0xf8032d961ea27c654a76581b21a133ba98bfee0b",
+      "tickSpacing": 2000,
+      "index": 2539
+    },
+    {
+      "pool": "0x26ca3083603efbc19760ee68199e2895e5e93b6d",
+      "token0": "0x112c956b912451bed762eb53cbdfa9ab3af26590",
+      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "tickSpacing": 2000,
+      "index": 2538
+    },
+    {
+      "pool": "0x92cfca85c9b75b0f20accab30da53fb2cd2f11f4",
+      "token0": "0x445040ffaab67992ba1020ec2558cd6754d83ad6",
+      "token1": "0xcc7c6dcee24e2f280a8fbcb6e5509fd285348d81",
+      "tickSpacing": 2000,
+      "index": 2537
+    },
+    {
+      "pool": "0xbe401caa4dcc40e312edc42119a48b12704a09d3",
+      "token0": "0x4200000000000000000000000000000000000006",
+      "token1": "0x48a68ba161ccfe1efa08e0d3b1aaab265dbafedd",
+      "tickSpacing": 2000,
+      "index": 2536
+    },
+    {
+      "pool": "0xd9142c82a5b7e11820ede5137e137c04e1922172",
+      "token0": "0x8d873f4b5db6dfb72de2be0c440dd2dfb8868668",
+      "token1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+      "tickSpacing": 2000,
+      "index": 2535
+    },
+    {
+      "pool": "0xc30e396414ff298855c2124ea75ba63014f49984",
+      "token0": "0x1c6efaa98ff6d432dfb7f0f6adf3c047e6cbedb9",
+      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "tickSpacing": 2000,
+      "index": 2534
+    },
+    {
+      "pool": "0xa92515fe2409551808fa98bf779ae50a31718152",
+      "token0": "0x129694688cf4986b5546fd5f02ea27dd865cc854",
+      "token1": "0x445040ffaab67992ba1020ec2558cd6754d83ad6",
+      "tickSpacing": 2000,
+      "index": 2533
+    },
+    {
+      "pool": "0xeef291d44eb42d6edd089e09670f48303eefb7fc",
+      "token0": "0x4200000000000000000000000000000000000006",
+      "token1": "0xd68c21af6b7568c33fd294078d91f91a9d73ad08",
+      "tickSpacing": 2000,
+      "index": 2532
+    },
+    {
+      "pool": "0x081c29367c7fdde2810bbc5e02c8024795bcbfa7",
+      "token0": "0x1c61629598e4a901136a81bc138e5828dc150d67",
+      "token1": "0xb7a6007dca76785b1ecf139378d9f5d885664b8d",
+      "tickSpacing": 2000,
+      "index": 2531
+    },
+    {
+      "pool": "0xe5a8cc096938b73daa7187ef6f4f07d6e07ba3b8",
+      "token0": "0x4db14e8015ddf68a62374530a7d3f3f17847c4fd",
+      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      "tickSpacing": 2000,
+      "index": 2530
+    },
+    {
+      "pool": "0x182a1f21a72995728da667b61afdddce8319a7c1",
+      "token0": "0x8bc32fd4e207df71c1b1de6931dbf75380ef1e2a",
+      "token1": "0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf",
+      "tickSpacing": 2000,
+      "index": 2529
+    },
+    {
+      "pool": "0xe77b393829c1357d8e077b07c8e63f0741dab878",
+      "token0": "0x1c61629598e4a901136a81bc138e5828dc150d67",
+      "token1": "0xac1d72f3405687d5a29aaafaf30488d8becb571a",
+      "tickSpacing": 2000,
+      "index": 2528
     }
   ]
 }
