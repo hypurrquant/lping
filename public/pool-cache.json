@@ -1,8 +1,15 @@
 {
-  "generatedAt": "2026-02-15T18:13:20.174Z",
-  "totalPoolsInFactory": 2942,
+  "generatedAt": "2026-02-16T00:42:10.096Z",
+  "totalPoolsInFactory": 2943,
   "includedPools": 12,
   "pools": [
+    {
+      "pool": "0x1a7d563ecfad8e51ddfa88e75dafa1d8a00b5f06",
+      "token0": "0x0d9bc93b41f1f4bdfab41694123f30a43bdcf597",
+      "token1": "0xc0d3700000987c99b3c9009069e4f8413fd22330",
+      "tickSpacing": 2000,
+      "index": 2754
+    },
     {
       "pool": "0x99023f3a89481e9b071e0e32a9f84e3adf5b2bfc",
       "token0": "0x1b4617734c43f6159f3a70b7e06d883647512778",
@@ -79,13 +86,6 @@
       "token1": "0xfd54b37461d8c29ab1792f56e78c2bf062f81977",
       "tickSpacing": 200,
       "index": 2743
-    },
-    {
-      "pool": "0x1c4d73bfbec9704417b40b347608ab1d853e8984",
-      "token0": "0x713ced9acec4ced94f89385c1285810aa9cb7fad",
-      "token1": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
-      "tickSpacing": 2000,
-      "index": 2742
     }
   ]
 }
